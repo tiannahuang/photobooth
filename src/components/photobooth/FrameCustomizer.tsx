@@ -43,7 +43,7 @@ export function FrameCustomizer({
       <div className="flex-1 flex items-center justify-center">
         <div className="relative w-full max-w-sm">
           {isRendering && (
-            <div className="absolute inset-0 flex items-center justify-center bg-muted/50 rounded-lg z-10">
+            <div className="absolute inset-0 flex items-center justify-center bg-muted/50 z-10">
               <div className="text-sm text-muted-foreground">Rendering...</div>
             </div>
           )}
@@ -52,10 +52,10 @@ export function FrameCustomizer({
             <img
               src={previewUrl}
               alt="Preview"
-              className="w-full rounded-lg shadow-lg"
+              className="w-full shadow-lg"
             />
           ) : (
-            <div className="w-full aspect-[3/4] bg-muted rounded-lg flex items-center justify-center">
+            <div className="w-full aspect-[3/4] bg-muted flex items-center justify-center">
               <span className="text-muted-foreground text-sm">
                 Loading preview...
               </span>

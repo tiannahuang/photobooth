@@ -49,10 +49,10 @@ export function DownloadScreen({
         <img
           src={previewUrl}
           alt="Final composition"
-          className="w-full rounded-lg shadow-lg"
+          className="max-h-[calc(100vh-16rem)] w-auto mx-auto shadow-lg"
         />
       ) : (
-        <div className="w-full aspect-[3/4] bg-muted rounded-lg flex items-center justify-center">
+        <div className="w-full aspect-[3/4] bg-muted flex items-center justify-center">
           <span className="text-muted-foreground text-sm">Rendering...</span>
         </div>
       )}
