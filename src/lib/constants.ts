@@ -90,6 +90,11 @@ export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
   },
 };
 
+export function getSlotAspectRatio(layout: LayoutConfig): number {
+  const slot = layout.slots[0];
+  return slot.width / slot.height;
+}
+
 export const KOREAN_LAYOUTS: KoreanLayout[] = [
   'single',
   '2x2-horizontal',

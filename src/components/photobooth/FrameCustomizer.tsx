@@ -52,7 +52,7 @@ export function FrameCustomizer({
             <img
               src={previewUrl}
               alt="Preview"
-              className="w-full shadow-lg"
+              className="max-h-[calc(100vh-12rem)] w-auto mx-auto shadow-lg"
             />
           ) : (
             <div className="w-full aspect-[3/4] bg-muted flex items-center justify-center">

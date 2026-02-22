@@ -3,13 +3,18 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { FlipHorizontal2 } from "lucide-react";
 import { useCaptureSession } from "@/hooks/useCaptureSession";
 import { CameraViewfinder } from "@/components/photobooth/CameraViewfinder";
 import { CountdownOverlay } from "@/components/photobooth/CountdownOverlay";
+import { LAYOUTS, getSlotAspectRatio } from "@/lib/constants";
 
 interface VintageCaptureProps {
   onComplete: (photos: string[]) => void;
 }
+
+const vintageLayout = LAYOUTS["vintage-strip"];
+const vintageSlotAspectRatio = getSlotAspectRatio(vintageLayout);
 
 export function VintageCapture({ onComplete }: VintageCaptureProps) {
   const session = useCaptureSession({
@@ -37,7 +42,17 @@ export function VintageCapture({ onComplete }: VintageCaptureProps) {
           videoRef={session.camera.videoRef}
           error={session.camera.error}
           isReady={session.camera.isReady}
+          aspectRatio={vintageSlotAspectRatio}
+          isMirrored={session.isMirrored}
         />
+        <button
+          onClick={() => session.setMirrored(!session.isMirrored)}
+          disabled={session.step !== "idle"}
+          className="absolute top-2 right-2 z-10 p-2 rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors disabled:opacity-50"
+          aria-label="Flip camera"
+        >
+          <FlipHorizontal2 className="w-5 h-5" />
+        </button>
         <CountdownOverlay
           count={session.count}
           isRunning={session.isCountdownRunning}

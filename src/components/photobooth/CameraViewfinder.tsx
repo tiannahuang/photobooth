@@ -6,15 +6,22 @@ interface CameraViewfinderProps {
   videoRef: RefObject<HTMLVideoElement | null>;
   error: string | null;
   isReady: boolean;
+  aspectRatio?: number;
+  isMirrored?: boolean;
 }
 
 export function CameraViewfinder({
   videoRef,
   error,
   isReady,
+  aspectRatio = 4 / 3,
+  isMirrored = true,
 }: CameraViewfinderProps) {
   return (
-    <div className="relative w-full max-w-lg mx-auto aspect-[4/3] bg-black rounded-lg overflow-hidden">
+    <div
+      className="relative w-full max-w-lg mx-auto max-h-[60vh] bg-black rounded-lg overflow-hidden"
+      style={{ aspectRatio }}
+    >
       {error ? (
         <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
           <div className="text-white">
@@ -33,7 +40,7 @@ export function CameraViewfinder({
         playsInline
         muted
         className="w-full h-full object-cover"
-        style={{ transform: "scaleX(-1)" }}
+        style={{ transform: isMirrored ? "scaleX(-1)" : "none" }}
       />
     </div>
   );

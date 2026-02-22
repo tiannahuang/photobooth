@@ -20,6 +20,8 @@ export interface UseCaptureSessionReturn {
   isCountdownRunning: boolean;
   currentPhotoIndex: number;
   camera: ReturnType<typeof useCamera>;
+  isMirrored: boolean;
+  setMirrored: (mirrored: boolean) => void;
   startSession: () => Promise<void>;
   retakeAll: () => void;
 }
@@ -36,6 +38,13 @@ export function useCaptureSession({
   const { count, isRunning: isCountdownRunning, startCountdown } = useCountdown();
   const { startRecording, stopRecording } = useMediaRecorder();
   const isSessionActive = useRef(false);
+  const isMirroredRef = useRef(true);
+  const [isMirrored, setIsMirroredState] = useState(true);
+
+  const setMirrored = useCallback((mirrored: boolean) => {
+    isMirroredRef.current = mirrored;
+    setIsMirroredState(mirrored);
+  }, []);
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -63,7 +72,7 @@ export function useCaptureSession({
       if (!isSessionActive.current) break;
 
       setStep("capturing");
-      const photo = camera.capturePhoto();
+      const photo = camera.capturePhoto(isMirroredRef.current);
       if (photo) {
         captured.push(photo);
         setPhotos([...captured]);
@@ -108,6 +117,8 @@ export function useCaptureSession({
     isCountdownRunning,
     currentPhotoIndex,
     camera,
+    isMirrored,
+    setMirrored,
     startSession,
     retakeAll,
   };
