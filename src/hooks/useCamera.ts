@@ -69,7 +69,7 @@ export function useCamera(): UseCameraReturn {
 
   const capturePhoto = useCallback((): string | null => {
     const video = videoRef.current;
-    if (!video || !isReady) return null;
+    if (!video || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return null;
 
     if (!canvasRef.current) {
       canvasRef.current = document.createElement("canvas");
@@ -89,7 +89,7 @@ export function useCamera(): UseCameraReturn {
     ctx.restore();
 
     return canvas.toDataURL("image/jpeg", 0.92);
-  }, [isReady]);
+  }, []);
 
   useEffect(() => {
     return () => {
