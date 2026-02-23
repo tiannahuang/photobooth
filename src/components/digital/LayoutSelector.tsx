@@ -59,7 +59,7 @@ export function LayoutSelector<T extends LayoutType>({
             onClick={() => onSelect(layout)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors w-36 sm:w-40 ${
+            className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 transition-colors w-36 sm:w-40 ${
               selected === layout
                 ? "border-foreground bg-accent"
                 : "border-transparent bg-muted/50 hover:bg-muted"
