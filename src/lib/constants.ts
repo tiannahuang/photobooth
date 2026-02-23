@@ -116,6 +116,11 @@ export const FILTER_CSS: Record<CameraFilter, string> = {
   cool: 'brightness(1.05) saturate(1.1) hue-rotate(15deg)',
   vintage: 'sepia(0.2) contrast(0.9) brightness(1.1) saturate(0.85)',
   vivid: 'saturate(1.5) contrast(1.15)',
+  sepia: 'sepia(0.6) brightness(1.05) contrast(1.05)',
+  faded: 'brightness(1.1) contrast(0.8) saturate(0.7)',
+  retro: 'sepia(0.4) saturate(0.8) contrast(1.1) brightness(0.95)',
+  noir: 'grayscale(1) contrast(1.4) brightness(0.9)',
+  rose: 'sepia(0.15) saturate(1.2) hue-rotate(-10deg) brightness(1.05)',
 };
 
 export const FILTER_LABELS: Record<CameraFilter, string> = {
@@ -127,11 +132,16 @@ export const FILTER_LABELS: Record<CameraFilter, string> = {
   cool: 'Cool',
   vintage: 'Vintage',
   vivid: 'Vivid',
+  sepia: 'Sepia',
+  faded: 'Faded',
+  retro: 'Retro',
+  noir: 'Noir',
+  rose: 'Rose',
 };
 
 export const MODE_FILTERS: Record<PhotoboothMode, CameraFilter[]> = {
   digital: ['none', 'bw', 'smoothing', 'brighter', 'warm', 'cool', 'vintage', 'vivid'],
-  vintage: ['none', 'bw', 'warm', 'vintage'],
+  vintage: ['none', 'bw', 'warm', 'vintage', 'sepia', 'faded', 'retro', 'noir', 'rose'],
 };
 
 export const FRAME_COLORS = [

@@ -2,7 +2,7 @@ import type { LayoutConfig, CompositionOptions } from "@/types/photobooth";
 import { LOGO_AREA_HEIGHT } from "@/lib/constants";
 import { calculateCoverCrop } from "./crop";
 
-function isLightColor(hex: string): boolean {
+export function isLightColor(hex: string): boolean {
   const c = hex.replace("#", "");
   const r = parseInt(c.substring(0, 2), 16);
   const g = parseInt(c.substring(2, 4), 16);
@@ -11,7 +11,7 @@ function isLightColor(hex: string): boolean {
   return luminance > 0.5;
 }
 
-function loadImage(src: string): Promise<HTMLImageElement> {
+export function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);

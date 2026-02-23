@@ -1,9 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useComposition } from "@/hooks/useComposition";
 import { downloadBlob } from "@/lib/canvas/export";
+import { generateFrameVideo } from "@/lib/canvas/frameVideo";
 import type { LayoutConfig, Theme } from "@/types/photobooth";
 
 interface DownloadScreenProps {
@@ -30,9 +33,37 @@ export function DownloadScreen({
     theme,
   });
 
-  const handleDownloadVideo = () => {
+  const [frameVideoBlob, setFrameVideoBlob] = useState<Blob | null>(null);
+  const [isGeneratingFrameVideo, setIsGeneratingFrameVideo] = useState(false);
+
+  useEffect(() => {
+    if (photos.length === 0) return;
+
+    let cancelled = false;
+    setIsGeneratingFrameVideo(true);
+
+    generateFrameVideo(photos, layoutConfig, { frameColor, theme })
+      .then((blob) => {
+        if (!cancelled) setFrameVideoBlob(blob);
+      })
+      .finally(() => {
+        if (!cancelled) setIsGeneratingFrameVideo(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [photos, layoutConfig, frameColor, theme]);
+
+  const handleDownloadSessionVideo = () => {
     if (videoBlob) {
-      downloadBlob(videoBlob, `photobooth-video-${Date.now()}.webm`);
+      downloadBlob(videoBlob, `photobooth-session-${Date.now()}.webm`);
+    }
+  };
+
+  const handleDownloadFrameVideo = () => {
+    if (frameVideoBlob) {
+      downloadBlob(frameVideoBlob, `photobooth-strip-${Date.now()}.webm`);
     }
   };
 
@@ -61,15 +92,35 @@ export function DownloadScreen({
         <Button onClick={downloadImage} className="w-full" size="lg">
           Download Photo
         </Button>
+
+        {/* Frame strip video — always available once generated */}
+        <Button
+          variant="outline"
+          onClick={handleDownloadFrameVideo}
+          className="w-full"
+          disabled={isGeneratingFrameVideo || !frameVideoBlob}
+        >
+          {isGeneratingFrameVideo ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Generating Strip Video...
+            </>
+          ) : (
+            "Download Strip Video"
+          )}
+        </Button>
+
+        {/* Session video — only if one was recorded */}
         {videoBlob && (
           <Button
             variant="outline"
-            onClick={handleDownloadVideo}
+            onClick={handleDownloadSessionVideo}
             className="w-full"
           >
-            Download Video
+            Download Session Video
           </Button>
         )}
+
         <Button variant="ghost" onClick={onStartOver} className="w-full">
           Start Over
         </Button>

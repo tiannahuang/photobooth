@@ -46,7 +46,7 @@ export interface Theme {
   previewSrc: string;
 }
 
-export type CameraFilter = 'none' | 'bw' | 'smoothing' | 'brighter' | 'warm' | 'cool' | 'vintage' | 'vivid';
+export type CameraFilter = 'none' | 'bw' | 'smoothing' | 'brighter' | 'warm' | 'cool' | 'vintage' | 'vivid' | 'sepia' | 'faded' | 'retro' | 'noir' | 'rose';
 
 export type CaptureStep = 'idle' | 'countdown' | 'capturing' | 'review';
 
