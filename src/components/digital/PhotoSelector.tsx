@@ -202,11 +202,11 @@ export function PhotoSelector({
         another slot to swap or tap again to remove. Drag slots to reorder.
       </p>
 
-      <div className="grid grid-cols-[2fr_1fr] flex-1 gap-8 w-full min-h-0">
+      <div className="grid grid-cols-[3fr_2fr] flex-1 gap-8 w-full min-h-0">
         {/* Left: Photo pool + actions */}
         <div className="flex flex-col gap-3 min-h-0">
           {/* Action buttons row */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-end">
             <Button variant="outline" size="sm" onClick={handleAutoFill}>
               Auto Fill
             </Button>
@@ -250,26 +250,11 @@ export function PhotoSelector({
               })}
             </div>
           </div>
-
-          {/* Confirm / Retake */}
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={onRetake} className="flex-1">
-              Retake
-            </Button>
-            <Button
-              onClick={handleConfirm}
-              disabled={!allFilled}
-              className="flex-1"
-            >
-              {allFilled
-                ? "Confirm"
-                : `Fill ${slotAssignments.filter((v) => v === null).length} more`}
-            </Button>
-          </div>
         </div>
 
         {/* Right: Frame layout preview */}
-        <div className="flex items-center justify-center px-4">
+        <div className="flex flex-col items-center justify-center gap-2 px-4">
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Frame Preview</span>
           <div
             className="relative w-full bg-muted/30 border border-border rounded-lg overflow-hidden touch-none"
             style={{ aspectRatio: frameAspect }}
@@ -326,6 +311,22 @@ export function PhotoSelector({
             })}
           </div>
         </div>
+      </div>
+
+      {/* Confirm / Retake — full width below grid */}
+      <div className="flex gap-3 w-full">
+        <Button variant="outline" onClick={onRetake} className="flex-1">
+          Retake
+        </Button>
+        <Button
+          onClick={handleConfirm}
+          disabled={!allFilled}
+          className="flex-1"
+        >
+          {allFilled
+            ? "Confirm"
+            : `Fill ${slotAssignments.filter((v) => v === null).length} more`}
+        </Button>
       </div>
     </motion.div>
   );

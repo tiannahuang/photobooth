@@ -88,34 +88,36 @@ export function FrameCustomizer({
           </div>
         </div>
 
-        <div>
-          <h3 className="text-sm font-medium mb-3">Theme</h3>
-          <div className="flex flex-col gap-2">
-            <button
-              onClick={() => onThemeChange(null)}
-              className={`px-3 py-2 text-sm rounded-md text-left transition-colors ${
-                theme === null
-                  ? "bg-foreground text-background"
-                  : "bg-muted hover:bg-muted/80"
-              }`}
-            >
-              None
-            </button>
-            {themes.map((t) => (
+        {mode !== "vintage" && (
+          <div>
+            <h3 className="text-sm font-medium mb-3">Theme</h3>
+            <div className="flex flex-col gap-2">
               <button
-                key={t.name}
-                onClick={() => onThemeChange(t)}
+                onClick={() => onThemeChange(null)}
                 className={`px-3 py-2 text-sm rounded-md text-left transition-colors ${
-                  theme?.name === t.name
+                  theme === null
                     ? "bg-foreground text-background"
                     : "bg-muted hover:bg-muted/80"
                 }`}
               >
-                {t.label}
+                None
               </button>
-            ))}
+              {themes.map((t) => (
+                <button
+                  key={t.name}
+                  onClick={() => onThemeChange(t)}
+                  className={`px-3 py-2 text-sm rounded-md text-left transition-colors ${
+                    theme?.name === t.name
+                      ? "bg-foreground text-background"
+                      : "bg-muted hover:bg-muted/80"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <Button onClick={onComplete} className="w-full">
           Continue
