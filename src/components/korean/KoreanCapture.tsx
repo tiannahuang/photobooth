@@ -27,6 +27,11 @@ export function KoreanCapture({
   const slotAspectRatio = getSlotAspectRatio(layoutConfig);
 
   useEffect(() => {
+    session.camera.startCamera();
+    return () => session.camera.stopCamera();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     if (session.step === "review" && session.photos.length > 0) {
       onComplete(session.photos, session.videoBlob);
     }
@@ -51,8 +56,11 @@ export function KoreanCapture({
         />
         <button
           onClick={() => session.setMirrored(!session.isMirrored)}
-          disabled={session.step !== "idle"}
-          className="absolute top-2 right-2 z-10 p-2 rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors disabled:opacity-50"
+          className={`absolute top-2 right-2 z-10 p-2 rounded-full transition-colors ${
+            session.isMirrored
+              ? "bg-white/90 text-black shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+              : "bg-black/40 text-white/50"
+          }`}
           aria-label="Flip camera"
         >
           <FlipHorizontal2 className="w-5 h-5" />

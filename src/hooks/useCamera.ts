@@ -33,6 +33,9 @@ export function useCamera(): UseCameraReturn {
   }, []);
 
   const startCamera = useCallback(async (): Promise<MediaStream | null> => {
+    if (streamRef.current) {
+      return streamRef.current;
+    }
     setError(null);
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
