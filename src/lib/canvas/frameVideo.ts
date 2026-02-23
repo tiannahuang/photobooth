@@ -66,13 +66,13 @@ export async function generateFrameVideo(
   }
 
   // Pre-load theme assets
-  const themeImages: { img: HTMLImageElement; x: number; y: number; w: number; h: number }[] = [];
+  const themeImages: { img: HTMLImageElement; x: number; y: number; w: number; h: number; rotation?: number }[] = [];
   if (options.theme) {
     const assets = options.theme.getAssets?.(canvas.width, canvas.height) ?? options.theme.assets;
     for (const asset of assets) {
       try {
         const img = await loadImage(asset.src);
-        themeImages.push({ img, x: asset.x, y: asset.y, w: asset.width, h: asset.height });
+        themeImages.push({ img, x: asset.x, y: asset.y, w: asset.width, h: asset.height, rotation: asset.rotation });
       } catch {
         // Skip failed assets
       }
@@ -120,8 +120,18 @@ export async function generateFrameVideo(
   };
 
   const drawTheme = () => {
-    for (const { img, x, y, w, h } of themeImages) {
-      ctx!.drawImage(img, x, y, w, h);
+    for (const { img, x, y, w, h, rotation } of themeImages) {
+      if (rotation) {
+        ctx!.save();
+        const cx = x + w / 2;
+        const cy = y + h / 2;
+        ctx!.translate(cx, cy);
+        ctx!.rotate((rotation * Math.PI) / 180);
+        ctx!.drawImage(img, -w / 2, -h / 2, w, h);
+        ctx!.restore();
+      } else {
+        ctx!.drawImage(img, x, y, w, h);
+      }
     }
   };
 

@@ -68,7 +68,17 @@ export async function renderComposition(
     for (const asset of assets) {
       try {
         const assetImg = await loadImage(asset.src);
-        ctx.drawImage(assetImg, asset.x, asset.y, asset.width, asset.height);
+        if (asset.rotation) {
+          ctx.save();
+          const cx = asset.x + asset.width / 2;
+          const cy = asset.y + asset.height / 2;
+          ctx.translate(cx, cy);
+          ctx.rotate((asset.rotation * Math.PI) / 180);
+          ctx.drawImage(assetImg, -asset.width / 2, -asset.height / 2, asset.width, asset.height);
+          ctx.restore();
+        } else {
+          ctx.drawImage(assetImg, asset.x, asset.y, asset.width, asset.height);
+        }
       } catch {
         // Skip assets that fail to load
       }

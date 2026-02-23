@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <rect width="120" height="120" rx="12" fill="#fff5f0"/>
+  <rect x="20" y="20" width="80" height="80" rx="4" fill="#ffe8e0" stroke="#ffb6c1" stroke-width="1.5"/>
+  <!-- Sweet corner clusters -->
+  <!-- Top-left cluster -->
+  <circle cx="10" cy="10" r="6" fill="#ff6b8a"/>
+  <circle cx="22" cy="6" r="4" fill="#ffb6c1" transform="rotate(-10 22 6)"/>
+  <path d="M5 22 L8 17 L11 22Z" fill="#c9a0dc" transform="rotate(8 8 20)"/>
+  <!-- Top-right cluster -->
+  <circle cx="108" cy="12" r="5" fill="#ff8fa3" transform="rotate(12 108 12)"/>
+  <circle cx="98" cy="6" r="4" fill="#ffe066" transform="rotate(-8 98 6)"/>
+  <path d="M112 22 L115 17 L118 22Z" fill="#ffb6c1" transform="rotate(-12 115 20)"/>
+  <!-- Bottom-left cluster -->
+  <circle cx="8" cy="108" r="5" fill="#ffb6c1"/>
+  <circle cx="18" cy="114" r="4" fill="#c9a0dc" transform="rotate(10 18 114)"/>
+  <path d="M4 96 L7 91 L10 96Z" fill="#ff6b8a" transform="rotate(-8 7 94)"/>
+  <!-- Bottom-right cluster -->
+  <circle cx="110" cy="110" r="6" fill="#ffe066" transform="rotate(-10 110 110)"/>
+  <circle cx="100" cy="115" r="4" fill="#ff6b8a" transform="rotate(12 100 115)"/>
+  <path d="M114 98 L117 93 L120 98Z" fill="#ffb6c1" transform="rotate(8 117 96)"/>
+</svg>

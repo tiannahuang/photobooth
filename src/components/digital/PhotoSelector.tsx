@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import type { LayoutConfig } from "@/types/photobooth";
@@ -24,6 +24,10 @@ export function PhotoSelector({
     () => Array(slotCount).fill(null)
   );
   const [activeSlotIndex, setActiveSlotIndex] = useState<number | null>(null);
+
+  // Drag-and-drop state
+  const [dragSlotIndex, setDragSlotIndex] = useState<number | null>(null);
+  const draggingRef = useRef(false);
 
   const assignedIndices = new Set(
     slotAssignments.filter((v): v is number => v !== null)
@@ -59,6 +63,12 @@ export function PhotoSelector({
 
   const handleSlotTap = useCallback(
     (slotIdx: number) => {
+      // Suppress tap if we just finished dragging
+      if (draggingRef.current) {
+        draggingRef.current = false;
+        return;
+      }
+
       const current = slotAssignments[slotIdx];
 
       if (current === null) {
@@ -105,6 +115,45 @@ export function PhotoSelector({
     [slotAssignments, activeSlotIndex]
   );
 
+  // Drag-and-drop handlers for frame slots
+  const handleDragStart = useCallback((slotIdx: number) => {
+    setDragSlotIndex(slotIdx);
+    draggingRef.current = true;
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+  }, []);
+
+  const handleDrop = useCallback(
+    (targetSlotIdx: number) => {
+      if (dragSlotIndex === null || dragSlotIndex === targetSlotIdx) {
+        setDragSlotIndex(null);
+        return;
+      }
+
+      // Swap the two slots
+      setSlotAssignments((prev) => {
+        const next = [...prev];
+        const temp = next[dragSlotIndex];
+        next[dragSlotIndex] = next[targetSlotIdx];
+        next[targetSlotIdx] = temp;
+        return next;
+      });
+      setDragSlotIndex(null);
+      setActiveSlotIndex(null);
+    },
+    [dragSlotIndex]
+  );
+
+  const handleDragEnd = useCallback(() => {
+    setDragSlotIndex(null);
+    // Reset dragging flag after a tick so onClick can check it
+    setTimeout(() => {
+      draggingRef.current = false;
+    }, 0);
+  }, []);
+
   const handleAutoFill = useCallback(() => {
     setSlotAssignments((prev) => {
       const next = [...prev];
@@ -143,19 +192,19 @@ export function PhotoSelector({
 
   return (
     <motion.div
-      className="flex flex-col items-center gap-4 w-full max-w-5xl mx-auto px-4 h-[calc(100vh-8rem)]"
+      className="flex flex-col items-center gap-4 w-full max-w-6xl mx-auto px-4 h-[calc(100vh-8rem)]"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
       <h2 className="text-2xl font-semibold">Arrange Your Photos</h2>
       <p className="text-sm text-muted-foreground">
         Tap a photo to fill the next slot. Tap a slot to select it, then tap
-        another slot to swap or tap again to remove.
+        another slot to swap or tap again to remove. Drag slots to reorder.
       </p>
 
-      <div className="flex flex-1 gap-8 w-full min-h-0">
+      <div className="grid grid-cols-[2fr_1fr] flex-1 gap-8 w-full min-h-0">
         {/* Left: Photo pool + actions */}
-        <div className="flex-1 flex flex-col gap-3 min-h-0">
+        <div className="flex flex-col gap-3 min-h-0">
           {/* Action buttons row */}
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleAutoFill}>
@@ -220,10 +269,11 @@ export function PhotoSelector({
         </div>
 
         {/* Right: Frame layout preview */}
-        <div className="flex items-center justify-center w-80 shrink-0 px-4">
+        <div className="flex items-center justify-center px-4">
           <div
-            className="relative w-full bg-muted/30 border border-border rounded-lg overflow-hidden"
+            className="relative w-full bg-muted/30 border border-border rounded-lg overflow-hidden touch-none"
             style={{ aspectRatio: frameAspect }}
+            onDragOver={handleDragOver}
           >
             {layoutConfig.slots.map((slot, i) => {
               const left = (slot.x / layoutConfig.canvasWidth) * 100;
@@ -232,15 +282,23 @@ export function PhotoSelector({
               const height = (slot.height / layoutConfig.canvasHeight) * 100;
               const photoIdx = slotAssignments[i];
               const isActive = activeSlotIndex === i;
+              const isDragging = dragSlotIndex === i;
 
               return (
                 <button
                   key={i}
                   onClick={() => handleSlotTap(i)}
+                  draggable={photoIdx !== null}
+                  onDragStart={() => handleDragStart(i)}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDrop(i)}
+                  onDragEnd={handleDragEnd}
                   className={`absolute overflow-hidden transition-all ${
-                    isActive
-                      ? "ring-2 ring-blue-500 ring-offset-1"
-                      : "ring-1 ring-border"
+                    isDragging
+                      ? "opacity-50 ring-2 ring-blue-400"
+                      : isActive
+                        ? "ring-2 ring-blue-500 ring-offset-1"
+                        : "ring-1 ring-border"
                   }`}
                   style={{
                     left: `${left}%`,

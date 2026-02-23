@@ -28,7 +28,7 @@ export interface LayoutConfig {
   padding: number;
 }
 
-export type ThemeName = 'minimalist' | 'y2k' | 'coquette' | 'cottagecore' | 'deco';
+export type ThemeName = 'deco' | 'deco-chaos' | 'deco-sweet' | 'deco-party';
 
 export interface ThemeAsset {
   src: string;
@@ -36,6 +36,7 @@ export interface ThemeAsset {
   y: number;
   width: number;
   height: number;
+  rotation?: number;
 }
 
 export interface Theme {
