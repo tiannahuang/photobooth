@@ -6,7 +6,7 @@ import type {
   WizardStep,
   Theme,
 } from "@/types/photobooth";
-import { LAYOUTS, DEFAULT_FRAME_COLOR } from "@/lib/constants";
+import { LAYOUTS, DIGITAL_LAYOUTS, DEFAULT_FRAME_COLOR } from "@/lib/constants";
 import { LayoutSelector } from "@/components/digital/LayoutSelector";
 import { DigitalCapture } from "@/components/digital/DigitalCapture";
 import { PhotoReview } from "@/components/photobooth/PhotoReview";
@@ -83,7 +83,7 @@ export default function DigitalPage() {
   return (
     <PhotoboothWizard currentStep={stepIndex} totalSteps={STEPS.length}>
       {step === "layout" && (
-        <LayoutSelector onSelect={handleLayoutSelect} selected={layout} />
+        <LayoutSelector layouts={DIGITAL_LAYOUTS} onSelect={handleLayoutSelect} selected={layout} />
       )}
       {step === "capture" && (
         <DigitalCapture
@@ -115,6 +115,7 @@ export default function DigitalPage() {
           theme={theme}
           onThemeChange={setTheme}
           onComplete={handleCustomizeComplete}
+          mode="digital"
         />
       )}
       {step === "download" && (

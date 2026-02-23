@@ -7,7 +7,7 @@ export type DigitalLayout =
   | '1x4-strip'
   | '2x4-grid';
 
-export type VintageLayout = 'vintage-strip';
+export type VintageLayout = 'vintage-strip' | 'vintage-4x1';
 
 export type LayoutType = DigitalLayout | VintageLayout;
 

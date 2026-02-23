@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useComposition } from "@/hooks/useComposition";
-import { FRAME_COLORS } from "@/lib/constants";
+import { FRAME_COLORS, VINTAGE_FRAME_COLORS } from "@/lib/constants";
 import { themes } from "@/lib/themes/registry";
-import type { LayoutConfig, Theme } from "@/types/photobooth";
+import type { LayoutConfig, Theme, PhotoboothMode } from "@/types/photobooth";
 
 interface FrameCustomizerProps {
   photos: string[];
@@ -15,6 +15,7 @@ interface FrameCustomizerProps {
   theme: Theme | null;
   onThemeChange: (theme: Theme | null) => void;
   onComplete: () => void;
+  mode?: PhotoboothMode;
 }
 
 export function FrameCustomizer({
@@ -25,7 +26,9 @@ export function FrameCustomizer({
   theme,
   onThemeChange,
   onComplete,
+  mode = "digital",
 }: FrameCustomizerProps) {
+  const colors = mode === "vintage" ? VINTAGE_FRAME_COLORS : FRAME_COLORS;
   const { previewUrl, isRendering } = useComposition({
     photos,
     layoutConfig,
@@ -69,7 +72,7 @@ export function FrameCustomizer({
         <div>
           <h3 className="text-sm font-medium mb-3">Frame Color</h3>
           <div className="flex flex-wrap gap-2">
-            {FRAME_COLORS.map((color) => (
+            {colors.map((color) => (
               <button
                 key={color}
                 onClick={() => onFrameColorChange(color)}

@@ -51,7 +51,13 @@ export function useCamera(): UseCameraReturn {
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        await videoRef.current.play();
+        try {
+          await videoRef.current.play();
+        } catch {
+          // play() can throw AbortError in React strict mode when the
+          // component remounts — the <video autoPlay> attribute will
+          // auto-play once ready, so this is safe to ignore.
+        }
         setIsReady(true);
       }
       return mediaStream;

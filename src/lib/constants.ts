@@ -1,4 +1,4 @@
-import { LayoutConfig, DigitalLayout, LayoutType, CameraFilter, PhotoboothMode } from '@/types/photobooth';
+import { LayoutConfig, DigitalLayout, VintageLayout, LayoutType, CameraFilter, PhotoboothMode } from '@/types/photobooth';
 
 export const COUNTDOWN_DURATION = 3;
 export const PAUSE_BETWEEN_PHOTOS = 1500; // ms
@@ -81,13 +81,27 @@ export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
     label: 'Vintage Strip',
     photoCount: 4,
     canvasWidth: 400,
-    canvasHeight: 1260,
+    canvasHeight: 2220,
     padding: 30,
     slots: [
-      { x: 30, y: 30, width: 340, height: 264 },
-      { x: 30, y: 314, width: 340, height: 264 },
-      { x: 30, y: 598, width: 340, height: 264 },
-      { x: 30, y: 882, width: 340, height: 264 },
+      { x: 30, y: 30, width: 340, height: 510 },
+      { x: 30, y: 560, width: 340, height: 510 },
+      { x: 30, y: 1090, width: 340, height: 510 },
+      { x: 30, y: 1620, width: 340, height: 510 },
+    ],
+  },
+  'vintage-4x1': {
+    type: 'vintage-4x1',
+    label: 'Vintage 4x1',
+    photoCount: 4,
+    canvasWidth: 1160,
+    canvasHeight: 510,
+    padding: 30,
+    slots: [
+      { x: 30, y: 30, width: 260, height: 390 },
+      { x: 310, y: 30, width: 260, height: 390 },
+      { x: 590, y: 30, width: 260, height: 390 },
+      { x: 870, y: 30, width: 260, height: 390 },
     ],
   },
 };
@@ -105,7 +119,14 @@ export const DIGITAL_LAYOUTS: DigitalLayout[] = [
   '2x4-grid',
 ];
 
+export const VINTAGE_LAYOUTS: VintageLayout[] = [
+  'vintage-strip',
+  'vintage-4x1',
+];
+
 export const DEFAULT_FRAME_COLOR = '#ffffff';
+
+export const VINTAGE_FRAME_COLORS = ['#ffffff', '#000000'];
 
 export const FILTER_CSS: Record<CameraFilter, string> = {
   none: 'none',

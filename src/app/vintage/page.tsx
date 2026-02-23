@@ -1,30 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import type { WizardStep, Theme } from "@/types/photobooth";
-import { LAYOUTS, DEFAULT_FRAME_COLOR } from "@/lib/constants";
+import type { VintageLayout, WizardStep, Theme } from "@/types/photobooth";
+import { LAYOUTS, VINTAGE_LAYOUTS, DEFAULT_FRAME_COLOR } from "@/lib/constants";
+import { LayoutSelector } from "@/components/digital/LayoutSelector";
 import { VintageCapture } from "@/components/vintage/VintageCapture";
 import { PhotoReview } from "@/components/photobooth/PhotoReview";
 import { FrameCustomizer } from "@/components/photobooth/FrameCustomizer";
 import { DownloadScreen } from "@/components/photobooth/DownloadScreen";
 import { PhotoboothWizard } from "@/components/photobooth/PhotoboothWizard";
 
-const STEPS: WizardStep[] = ["capture", "review", "customize", "download"];
-const LAYOUT_CONFIG = LAYOUTS["vintage-strip"];
+const STEPS: WizardStep[] = ["layout", "capture", "review", "customize", "download"];
 
 export default function VintagePage() {
-  const [step, setStep] = useState<WizardStep>("capture");
+  const [step, setStep] = useState<WizardStep>("layout");
+  const [layout, setLayout] = useState<VintageLayout>("vintage-strip");
   const [photos, setPhotos] = useState<string[]>([]);
+  const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [frameColor, setFrameColor] = useState(DEFAULT_FRAME_COLOR);
   const [theme, setTheme] = useState<Theme | null>(null);
 
-  const handleCaptureComplete = (capturedPhotos: string[]) => {
+  const layoutConfig = LAYOUTS[layout];
+
+  const handleLayoutSelect = (selected: VintageLayout) => {
+    setLayout(selected);
+    setStep("capture");
+  };
+
+  const handleCaptureComplete = (capturedPhotos: string[], video: Blob | null) => {
     setPhotos(capturedPhotos);
+    setVideoBlob(video);
     setStep("review");
   };
 
   const handleRetakeAll = () => {
     setPhotos([]);
+    setVideoBlob(null);
     setStep("capture");
   };
 
@@ -37,8 +48,9 @@ export default function VintagePage() {
   };
 
   const handleStartOver = () => {
-    setStep("capture");
+    setStep("layout");
     setPhotos([]);
+    setVideoBlob(null);
     setFrameColor(DEFAULT_FRAME_COLOR);
     setTheme(null);
   };
@@ -47,8 +59,18 @@ export default function VintagePage() {
 
   return (
     <PhotoboothWizard currentStep={stepIndex} totalSteps={STEPS.length}>
+      {step === "layout" && (
+        <LayoutSelector
+          layouts={VINTAGE_LAYOUTS}
+          onSelect={handleLayoutSelect}
+          selected={layout}
+        />
+      )}
       {step === "capture" && (
-        <VintageCapture onComplete={handleCaptureComplete} />
+        <VintageCapture
+          layoutConfig={layoutConfig}
+          onComplete={handleCaptureComplete}
+        />
       )}
       {step === "review" && (
         <PhotoReview
@@ -60,21 +82,22 @@ export default function VintagePage() {
       {step === "customize" && (
         <FrameCustomizer
           photos={photos}
-          layoutConfig={LAYOUT_CONFIG}
+          layoutConfig={layoutConfig}
           frameColor={frameColor}
           onFrameColorChange={setFrameColor}
           theme={theme}
           onThemeChange={setTheme}
           onComplete={handleCustomizeComplete}
+          mode="vintage"
         />
       )}
       {step === "download" && (
         <DownloadScreen
           photos={photos}
-          layoutConfig={LAYOUT_CONFIG}
+          layoutConfig={layoutConfig}
           frameColor={frameColor}
           theme={theme}
-          videoBlob={null}
+          videoBlob={videoBlob}
           onStartOver={handleStartOver}
         />
       )}

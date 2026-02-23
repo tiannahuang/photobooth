@@ -1,15 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { DIGITAL_LAYOUTS, LAYOUTS } from "@/lib/constants";
-import type { DigitalLayout } from "@/types/photobooth";
+import { LAYOUTS } from "@/lib/constants";
+import type { LayoutType } from "@/types/photobooth";
 
-interface LayoutSelectorProps {
-  selected: DigitalLayout;
-  onSelect: (layout: DigitalLayout) => void;
+interface LayoutSelectorProps<T extends LayoutType = LayoutType> {
+  layouts: T[];
+  selected: T;
+  onSelect: (layout: T) => void;
 }
 
-function LayoutThumbnail({ layout }: { layout: DigitalLayout }) {
+function LayoutThumbnail({ layout }: { layout: LayoutType }) {
   const config = LAYOUTS[layout];
   const scale = 80 / Math.max(config.canvasWidth, config.canvasHeight);
 
@@ -43,12 +44,16 @@ function LayoutThumbnail({ layout }: { layout: DigitalLayout }) {
   );
 }
 
-export function LayoutSelector({ selected, onSelect }: LayoutSelectorProps) {
+export function LayoutSelector<T extends LayoutType>({
+  layouts,
+  selected,
+  onSelect,
+}: LayoutSelectorProps<T>) {
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto px-4">
       <h2 className="text-2xl font-semibold">Choose a Layout</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full">
-        {DIGITAL_LAYOUTS.map((layout) => (
+        {layouts.map((layout) => (
           <motion.button
             key={layout}
             onClick={() => onSelect(layout)}

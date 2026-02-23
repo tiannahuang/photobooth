@@ -7,20 +7,22 @@ import { FlipHorizontal2 } from "lucide-react";
 import { useCaptureSession } from "@/hooks/useCaptureSession";
 import { CameraViewfinder } from "@/components/photobooth/CameraViewfinder";
 import { CountdownOverlay } from "@/components/photobooth/CountdownOverlay";
-import { LAYOUTS, getSlotAspectRatio, FILTER_CSS } from "@/lib/constants";
+import { getSlotAspectRatio, FILTER_CSS } from "@/lib/constants";
 import { FilterSelector } from "@/components/photobooth/FilterSelector";
+import type { LayoutConfig } from "@/types/photobooth";
 
 interface VintageCaptureProps {
-  onComplete: (photos: string[]) => void;
+  layoutConfig: LayoutConfig;
+  onComplete: (photos: string[], videoBlob: Blob | null) => void;
 }
 
-const vintageLayout = LAYOUTS["vintage-strip"];
-const vintageSlotAspectRatio = getSlotAspectRatio(vintageLayout);
+export function VintageCapture({ layoutConfig, onComplete }: VintageCaptureProps) {
+  const slotAspectRatio = getSlotAspectRatio(layoutConfig);
 
-export function VintageCapture({ onComplete }: VintageCaptureProps) {
   const session = useCaptureSession({
-    photoCount: 4,
-    enableVideo: false,
+    photoCount: layoutConfig.photoCount,
+    enableVideo: true,
+    targetAspectRatio: slotAspectRatio,
   });
 
   useEffect(() => {
@@ -30,16 +32,16 @@ export function VintageCapture({ onComplete }: VintageCaptureProps) {
 
   useEffect(() => {
     if (session.step === "review" && session.photos.length > 0) {
-      onComplete(session.photos);
+      onComplete(session.photos, session.videoBlob);
     }
-  }, [session.step, session.photos, onComplete]);
+  }, [session.step, session.photos, session.videoBlob, onComplete]);
 
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-lg mx-auto px-4">
       <div className="text-center">
         <h2 className="text-2xl font-semibold mb-1">Vintage Booth</h2>
         <p className="text-sm text-muted-foreground">
-          Photo {session.currentPhotoIndex + 1} of 4
+          Photo {session.currentPhotoIndex + 1} of {layoutConfig.photoCount}
         </p>
       </div>
 
@@ -48,7 +50,7 @@ export function VintageCapture({ onComplete }: VintageCaptureProps) {
           videoRef={session.camera.videoRef}
           error={session.camera.error}
           isReady={session.camera.isReady}
-          aspectRatio={vintageSlotAspectRatio}
+          aspectRatio={slotAspectRatio}
           isMirrored={session.isMirrored}
           filterCss={FILTER_CSS[session.filter]}
         />
