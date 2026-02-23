@@ -10,6 +10,7 @@ import type { CaptureStep, CameraFilter } from "@/types/photobooth";
 export interface UseCaptureSessionOptions {
   photoCount: number;
   enableVideo?: boolean;
+  targetAspectRatio?: number;
 }
 
 export interface UseCaptureSessionReturn {
@@ -31,6 +32,7 @@ export interface UseCaptureSessionReturn {
 export function useCaptureSession({
   photoCount,
   enableVideo = false,
+  targetAspectRatio,
 }: UseCaptureSessionOptions): UseCaptureSessionReturn {
   const [step, setStep] = useState<CaptureStep>("idle");
   const [photos, setPhotos] = useState<string[]>([]);
@@ -85,9 +87,9 @@ export function useCaptureSession({
       };
 
       drawFrame();
-      frameIntervalRef.current = setInterval(drawFrame, 500); // ~2fps
+      frameIntervalRef.current = setInterval(drawFrame, 125); // ~8fps
 
-      const canvasStream = canvas.captureStream(2);
+      const canvasStream = canvas.captureStream(8);
       startRecording(canvasStream);
     },
     [startRecording]
@@ -124,7 +126,7 @@ export function useCaptureSession({
       if (!isSessionActive.current) break;
 
       setStep("capturing");
-      const photo = camera.capturePhoto(isMirroredRef.current, FILTER_CSS[filterRef.current]);
+      const photo = camera.capturePhoto(isMirroredRef.current, FILTER_CSS[filterRef.current], targetAspectRatio);
       if (photo) {
         captured.push(photo);
         setPhotos([...captured]);
@@ -148,6 +150,7 @@ export function useCaptureSession({
     camera,
     enableVideo,
     photoCount,
+    targetAspectRatio,
     startCountdown,
     startCanvasRecording,
     stopCanvasRecording,

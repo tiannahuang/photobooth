@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
+import { calculateCoverCrop } from "@/lib/canvas/crop";
 
 export interface UseCameraReturn {
   videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -9,7 +10,7 @@ export interface UseCameraReturn {
   isReady: boolean;
   startCamera: () => Promise<MediaStream | null>;
   stopCamera: () => void;
-  capturePhoto: (isMirrored?: boolean, filterCss?: string) => string | null;
+  capturePhoto: (isMirrored?: boolean, filterCss?: string, targetAspectRatio?: number) => string | null;
 }
 
 export function useCamera(): UseCameraReturn {
@@ -70,7 +71,7 @@ export function useCamera(): UseCameraReturn {
     }
   }, []);
 
-  const capturePhoto = useCallback((isMirrored = true, filterCss?: string): string | null => {
+  const capturePhoto = useCallback((isMirrored = true, filterCss?: string, targetAspectRatio?: number): string | null => {
     const video = videoRef.current;
     if (!video || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return null;
 
@@ -97,6 +98,22 @@ export function useCamera(): UseCameraReturn {
     }
 
     ctx.filter = "none";
+
+    // Pre-crop to target aspect ratio so captured photo matches viewfinder
+    if (targetAspectRatio) {
+      const targetW = Math.round(canvas.height * targetAspectRatio);
+      const targetH = canvas.height;
+      const { sx, sy, sw, sh } = calculateCoverCrop(canvas.width, canvas.height, targetW, targetH);
+
+      const cropCanvas = document.createElement("canvas");
+      cropCanvas.width = Math.round(sw);
+      cropCanvas.height = Math.round(sh);
+      const cropCtx = cropCanvas.getContext("2d");
+      if (!cropCtx) return canvas.toDataURL("image/jpeg", 0.92);
+      cropCtx.drawImage(canvas, sx, sy, sw, sh, 0, 0, cropCanvas.width, cropCanvas.height);
+      return cropCanvas.toDataURL("image/jpeg", 0.92);
+    }
+
     return canvas.toDataURL("image/jpeg", 0.92);
   }, []);
 

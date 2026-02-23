@@ -54,6 +54,7 @@ export type WizardStep =
   | 'layout'
   | 'capture'
   | 'review'
+  | 'select'
   | 'customize'
   | 'download';
 

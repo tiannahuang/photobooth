@@ -3,6 +3,7 @@ import { LayoutConfig, KoreanLayout, LayoutType, CameraFilter, PhotoboothMode } 
 export const COUNTDOWN_DURATION = 3;
 export const PAUSE_BETWEEN_PHOTOS = 1500; // ms
 export const CANVAS_SCALE = 2; // retina
+export const KOREAN_CAPTURE_COUNT = 8;
 
 export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
   single: {

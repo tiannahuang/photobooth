@@ -7,7 +7,7 @@ import { FlipHorizontal2 } from "lucide-react";
 import { useCaptureSession } from "@/hooks/useCaptureSession";
 import { CameraViewfinder } from "@/components/photobooth/CameraViewfinder";
 import { CountdownOverlay } from "@/components/photobooth/CountdownOverlay";
-import { getSlotAspectRatio, FILTER_CSS } from "@/lib/constants";
+import { getSlotAspectRatio, FILTER_CSS, KOREAN_CAPTURE_COUNT } from "@/lib/constants";
 import { FilterSelector } from "@/components/photobooth/FilterSelector";
 import type { LayoutConfig } from "@/types/photobooth";
 
@@ -20,12 +20,13 @@ export function KoreanCapture({
   layoutConfig,
   onComplete,
 }: KoreanCaptureProps) {
-  const session = useCaptureSession({
-    photoCount: layoutConfig.photoCount,
-    enableVideo: true,
-  });
-
   const slotAspectRatio = getSlotAspectRatio(layoutConfig);
+
+  const session = useCaptureSession({
+    photoCount: KOREAN_CAPTURE_COUNT,
+    enableVideo: true,
+    targetAspectRatio: slotAspectRatio,
+  });
 
   useEffect(() => {
     session.camera.startCamera();
@@ -43,7 +44,7 @@ export function KoreanCapture({
       <div className="text-center">
         <h2 className="text-2xl font-semibold mb-1">Strike a Pose!</h2>
         <p className="text-sm text-muted-foreground">
-          Photo {session.currentPhotoIndex + 1} of {layoutConfig.photoCount}
+          Photo {session.currentPhotoIndex + 1} of {KOREAN_CAPTURE_COUNT}
         </p>
       </div>
 

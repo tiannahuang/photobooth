@@ -10,6 +10,7 @@ import { LAYOUTS, DEFAULT_FRAME_COLOR } from "@/lib/constants";
 import { LayoutSelector } from "@/components/korean/LayoutSelector";
 import { KoreanCapture } from "@/components/korean/KoreanCapture";
 import { PhotoReview } from "@/components/photobooth/PhotoReview";
+import { PhotoSelector } from "@/components/korean/PhotoSelector";
 import { FrameCustomizer } from "@/components/photobooth/FrameCustomizer";
 import { DownloadScreen } from "@/components/photobooth/DownloadScreen";
 import { PhotoboothWizard } from "@/components/photobooth/PhotoboothWizard";
@@ -18,6 +19,7 @@ const STEPS: WizardStep[] = [
   "layout",
   "capture",
   "review",
+  "select",
   "customize",
   "download",
 ];
@@ -26,6 +28,7 @@ export default function KoreanPage() {
   const [step, setStep] = useState<WizardStep>("layout");
   const [layout, setLayout] = useState<KoreanLayout>("1x4-strip");
   const [photos, setPhotos] = useState<string[]>([]);
+  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [frameColor, setFrameColor] = useState(DEFAULT_FRAME_COLOR);
   const [theme, setTheme] = useState<Theme | null>(null);
@@ -48,11 +51,17 @@ export default function KoreanPage() {
 
   const handleRetakeAll = () => {
     setPhotos([]);
+    setSelectedPhotos([]);
     setVideoBlob(null);
     setStep("capture");
   };
 
   const handleConfirmPhotos = () => {
+    setStep("select");
+  };
+
+  const handleSelectConfirm = (selected: string[]) => {
+    setSelectedPhotos(selected);
     setStep("customize");
   };
 
@@ -63,6 +72,7 @@ export default function KoreanPage() {
   const handleStartOver = () => {
     setStep("layout");
     setPhotos([]);
+    setSelectedPhotos([]);
     setVideoBlob(null);
     setFrameColor(DEFAULT_FRAME_COLOR);
     setTheme(null);
@@ -88,9 +98,17 @@ export default function KoreanPage() {
           onConfirm={handleConfirmPhotos}
         />
       )}
+      {step === "select" && (
+        <PhotoSelector
+          allPhotos={photos}
+          layoutConfig={layoutConfig}
+          onConfirm={handleSelectConfirm}
+          onRetake={handleRetakeAll}
+        />
+      )}
       {step === "customize" && (
         <FrameCustomizer
-          photos={photos}
+          photos={selectedPhotos}
           layoutConfig={layoutConfig}
           frameColor={frameColor}
           onFrameColorChange={setFrameColor}
@@ -101,7 +119,7 @@ export default function KoreanPage() {
       )}
       {step === "download" && (
         <DownloadScreen
-          photos={photos}
+          photos={selectedPhotos}
           layoutConfig={layoutConfig}
           frameColor={frameColor}
           theme={theme}
