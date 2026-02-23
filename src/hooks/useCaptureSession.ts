@@ -4,6 +4,7 @@ import { useState, useCallback, useRef } from "react";
 import { useCamera } from "./useCamera";
 import { useCountdown } from "./useCountdown";
 import { PAUSE_BETWEEN_PHOTOS, FILTER_CSS } from "@/lib/constants";
+import { getSupportedMimeType } from "@/lib/mediaUtils";
 import type { CaptureStep, CameraFilter } from "@/types/photobooth";
 
 export interface UseCaptureSessionOptions {
@@ -27,21 +28,6 @@ export interface UseCaptureSessionReturn {
   setFilter: (filter: CameraFilter) => void;
   startSession: () => Promise<void>;
   retakeAll: () => void;
-}
-
-function getSupportedMimeType(): string {
-  const types = [
-    "video/webm;codecs=vp9",
-    "video/webm;codecs=vp8",
-    "video/webm",
-    "video/mp4",
-  ];
-  for (const type of types) {
-    if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(type)) {
-      return type;
-    }
-  }
-  return "video/webm";
 }
 
 export function useCaptureSession({

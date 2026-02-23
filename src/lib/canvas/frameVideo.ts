@@ -1,25 +1,8 @@
 import type { LayoutConfig, CompositionOptions } from "@/types/photobooth";
 import { LOGO_AREA_HEIGHT } from "@/lib/constants";
+import { getSupportedMimeType } from "@/lib/mediaUtils";
 import { calculateCoverCrop } from "./crop";
 import { isLightColor, loadImage } from "./renderer";
-
-function getSupportedMimeType(): string {
-  const types = [
-    "video/webm;codecs=vp9",
-    "video/webm;codecs=vp8",
-    "video/webm",
-    "video/mp4",
-  ];
-  for (const type of types) {
-    if (
-      typeof MediaRecorder !== "undefined" &&
-      MediaRecorder.isTypeSupported(type)
-    ) {
-      return type;
-    }
-  }
-  return "video/webm";
-}
 
 function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);

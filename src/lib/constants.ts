@@ -128,37 +128,29 @@ export const DEFAULT_FRAME_COLOR = '#ffffff';
 
 export const VINTAGE_FRAME_COLORS = ['#ffffff', '#000000'];
 
-export const FILTER_CSS: Record<CameraFilter, string> = {
-  none: 'none',
-  bw: 'grayscale(1)',
-  smoothing: 'blur(0.5px) brightness(1.05) contrast(0.97)',
-  brighter: 'brightness(1.3)',
-  warm: 'sepia(0.3) saturate(1.2) brightness(1.05)',
-  cool: 'brightness(1.05) saturate(1.1) hue-rotate(15deg)',
-  vintage: 'sepia(0.2) contrast(0.9) brightness(1.1) saturate(0.85)',
-  vivid: 'saturate(1.5) contrast(1.15)',
-  sepia: 'sepia(0.6) brightness(1.05) contrast(1.05)',
-  faded: 'brightness(1.1) contrast(0.8) saturate(0.7)',
-  retro: 'sepia(0.4) saturate(0.8) contrast(1.1) brightness(0.95)',
-  noir: 'grayscale(1) contrast(1.4) brightness(0.9)',
-  rose: 'sepia(0.15) saturate(1.2) hue-rotate(-10deg) brightness(1.05)',
+export const FILTERS: Record<CameraFilter, { css: string; label: string }> = {
+  none: { css: 'none', label: 'None' },
+  bw: { css: 'grayscale(1)', label: 'B&W' },
+  smoothing: { css: 'blur(0.5px) brightness(1.05) contrast(0.97)', label: 'Smooth' },
+  brighter: { css: 'brightness(1.3)', label: 'Bright' },
+  warm: { css: 'sepia(0.3) saturate(1.2) brightness(1.05)', label: 'Warm' },
+  cool: { css: 'brightness(1.05) saturate(1.1) hue-rotate(15deg)', label: 'Cool' },
+  vintage: { css: 'sepia(0.2) contrast(0.9) brightness(1.1) saturate(0.85)', label: 'Vintage' },
+  vivid: { css: 'saturate(1.5) contrast(1.15)', label: 'Vivid' },
+  sepia: { css: 'sepia(0.6) brightness(1.05) contrast(1.05)', label: 'Sepia' },
+  faded: { css: 'brightness(1.1) contrast(0.8) saturate(0.7)', label: 'Faded' },
+  retro: { css: 'sepia(0.4) saturate(0.8) contrast(1.1) brightness(0.95)', label: 'Retro' },
+  noir: { css: 'grayscale(1) contrast(1.4) brightness(0.9)', label: 'Noir' },
+  rose: { css: 'sepia(0.15) saturate(1.2) hue-rotate(-10deg) brightness(1.05)', label: 'Rose' },
 };
 
-export const FILTER_LABELS: Record<CameraFilter, string> = {
-  none: 'None',
-  bw: 'B&W',
-  smoothing: 'Smooth',
-  brighter: 'Bright',
-  warm: 'Warm',
-  cool: 'Cool',
-  vintage: 'Vintage',
-  vivid: 'Vivid',
-  sepia: 'Sepia',
-  faded: 'Faded',
-  retro: 'Retro',
-  noir: 'Noir',
-  rose: 'Rose',
-};
+export const FILTER_CSS: Record<CameraFilter, string> = Object.fromEntries(
+  Object.entries(FILTERS).map(([k, v]) => [k, v.css])
+) as Record<CameraFilter, string>;
+
+export const FILTER_LABELS: Record<CameraFilter, string> = Object.fromEntries(
+  Object.entries(FILTERS).map(([k, v]) => [k, v.label])
+) as Record<CameraFilter, string>;
 
 export const MODE_FILTERS: Record<PhotoboothMode, CameraFilter[]> = {
   digital: ['none', 'bw', 'smoothing', 'brighter', 'warm', 'cool', 'vintage', 'vivid'],

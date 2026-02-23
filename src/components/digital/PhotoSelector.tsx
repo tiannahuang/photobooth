@@ -29,6 +29,16 @@ export function PhotoSelector({
   const [dragSlotIndex, setDragSlotIndex] = useState<number | null>(null);
   const draggingRef = useRef(false);
 
+  const swapSlots = useCallback((a: number, b: number) => {
+    setSlotAssignments((prev) => {
+      const next = [...prev];
+      const temp = next[a];
+      next[a] = next[b];
+      next[b] = temp;
+      return next;
+    });
+  }, []);
+
   const assignedIndices = new Set(
     slotAssignments.filter((v): v is number => v !== null)
   );
@@ -98,13 +108,7 @@ export function PhotoSelector({
 
       if (activeSlotIndex !== null && slotAssignments[activeSlotIndex] !== null) {
         // Another filled slot is active — swap
-        setSlotAssignments((prev) => {
-          const next = [...prev];
-          const temp = next[activeSlotIndex!];
-          next[activeSlotIndex!] = next[slotIdx];
-          next[slotIdx] = temp;
-          return next;
-        });
+        swapSlots(activeSlotIndex, slotIdx);
         setActiveSlotIndex(null);
         return;
       }
@@ -112,7 +116,7 @@ export function PhotoSelector({
       // Select this slot as active
       setActiveSlotIndex(slotIdx);
     },
-    [slotAssignments, activeSlotIndex]
+    [slotAssignments, activeSlotIndex, swapSlots]
   );
 
   // Drag-and-drop handlers for frame slots
@@ -133,17 +137,11 @@ export function PhotoSelector({
       }
 
       // Swap the two slots
-      setSlotAssignments((prev) => {
-        const next = [...prev];
-        const temp = next[dragSlotIndex];
-        next[dragSlotIndex] = next[targetSlotIdx];
-        next[targetSlotIdx] = temp;
-        return next;
-      });
+      swapSlots(dragSlotIndex, targetSlotIdx);
       setDragSlotIndex(null);
       setActiveSlotIndex(null);
     },
-    [dragSlotIndex]
+    [dragSlotIndex, swapSlots]
   );
 
   const handleDragEnd = useCallback(() => {
