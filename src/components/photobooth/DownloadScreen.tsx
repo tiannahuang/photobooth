@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useComposition } from "@/hooks/useComposition";
 import { downloadBlob } from "@/lib/canvas/export";
@@ -32,19 +30,6 @@ export function DownloadScreen({
     theme,
   });
 
-  const [showVideo, setShowVideo] = useState(false);
-
-  const videoUrl = useMemo(() => {
-    if (!videoBlob) return null;
-    return URL.createObjectURL(videoBlob);
-  }, [videoBlob]);
-
-  useEffect(() => {
-    return () => {
-      if (videoUrl) URL.revokeObjectURL(videoUrl);
-    };
-  }, [videoUrl]);
-
   const handleDownloadVideo = () => {
     if (videoBlob) {
       downloadBlob(videoBlob, `photobooth-video-${Date.now()}.webm`);
@@ -70,33 +55,6 @@ export function DownloadScreen({
         <div className="w-full aspect-[3/4] bg-muted flex items-center justify-center">
           <span className="text-muted-foreground text-sm">Rendering...</span>
         </div>
-      )}
-
-      {videoBlob && !showVideo && (
-        <button
-          onClick={() => setShowVideo(true)}
-          className="w-full border-2 border-dashed border-muted-foreground/30 rounded-lg p-4 flex items-center gap-4 hover:border-muted-foreground/50 hover:bg-muted/50 transition-colors"
-        >
-          <div className="flex-shrink-0 w-12 h-12 rounded-full bg-foreground/10 flex items-center justify-center">
-            <Play className="w-6 h-6" />
-          </div>
-          <div className="text-left">
-            <p className="font-medium">Tap here to see video</p>
-            <p className="text-sm text-muted-foreground">
-              Watch your entire photo session
-            </p>
-          </div>
-        </button>
-      )}
-
-      {showVideo && videoUrl && (
-        <video
-          src={videoUrl}
-          controls
-          autoPlay
-          playsInline
-          className="w-full rounded-lg shadow-lg"
-        />
       )}
 
       <div className="flex flex-col gap-3 w-full">

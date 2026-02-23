@@ -46,6 +46,8 @@ export interface Theme {
   previewSrc: string;
 }
 
+export type CameraFilter = 'none' | 'bw' | 'smoothing' | 'brighter';
+
 export type CaptureStep = 'idle' | 'countdown' | 'capturing' | 'review';
 
 export type WizardStep =

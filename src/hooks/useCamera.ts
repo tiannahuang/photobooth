@@ -9,7 +9,7 @@ export interface UseCameraReturn {
   isReady: boolean;
   startCamera: () => Promise<MediaStream | null>;
   stopCamera: () => void;
-  capturePhoto: (isMirrored?: boolean) => string | null;
+  capturePhoto: (isMirrored?: boolean, filterCss?: string) => string | null;
 }
 
 export function useCamera(): UseCameraReturn {
@@ -70,7 +70,7 @@ export function useCamera(): UseCameraReturn {
     }
   }, []);
 
-  const capturePhoto = useCallback((isMirrored = true): string | null => {
+  const capturePhoto = useCallback((isMirrored = true, filterCss?: string): string | null => {
     const video = videoRef.current;
     if (!video || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return null;
 
@@ -84,6 +84,8 @@ export function useCamera(): UseCameraReturn {
     const ctx = canvas.getContext("2d");
     if (!ctx) return null;
 
+    ctx.filter = filterCss && filterCss !== "none" ? filterCss : "none";
+
     if (isMirrored) {
       ctx.save();
       ctx.translate(canvas.width, 0);
@@ -94,6 +96,7 @@ export function useCamera(): UseCameraReturn {
       ctx.drawImage(video, 0, 0);
     }
 
+    ctx.filter = "none";
     return canvas.toDataURL("image/jpeg", 0.92);
   }, []);
 

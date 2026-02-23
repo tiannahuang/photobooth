@@ -7,7 +7,8 @@ import { FlipHorizontal2 } from "lucide-react";
 import { useCaptureSession } from "@/hooks/useCaptureSession";
 import { CameraViewfinder } from "@/components/photobooth/CameraViewfinder";
 import { CountdownOverlay } from "@/components/photobooth/CountdownOverlay";
-import { LAYOUTS, getSlotAspectRatio } from "@/lib/constants";
+import { LAYOUTS, getSlotAspectRatio, FILTER_CSS } from "@/lib/constants";
+import { FilterSelector } from "@/components/photobooth/FilterSelector";
 
 interface VintageCaptureProps {
   onComplete: (photos: string[]) => void;
@@ -49,6 +50,7 @@ export function VintageCapture({ onComplete }: VintageCaptureProps) {
           isReady={session.camera.isReady}
           aspectRatio={vintageSlotAspectRatio}
           isMirrored={session.isMirrored}
+          filterCss={FILTER_CSS[session.filter]}
         />
         <button
           onClick={() => session.setMirrored(!session.isMirrored)}
@@ -66,6 +68,12 @@ export function VintageCapture({ onComplete }: VintageCaptureProps) {
           isRunning={session.isCountdownRunning}
         />
       </div>
+
+      <FilterSelector
+        mode="vintage"
+        selected={session.filter}
+        onSelect={session.setFilter}
+      />
 
       {session.photos.length > 0 && (
         <div className="flex gap-2">

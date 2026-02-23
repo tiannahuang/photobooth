@@ -7,7 +7,8 @@ import { FlipHorizontal2 } from "lucide-react";
 import { useCaptureSession } from "@/hooks/useCaptureSession";
 import { CameraViewfinder } from "@/components/photobooth/CameraViewfinder";
 import { CountdownOverlay } from "@/components/photobooth/CountdownOverlay";
-import { getSlotAspectRatio } from "@/lib/constants";
+import { getSlotAspectRatio, FILTER_CSS } from "@/lib/constants";
+import { FilterSelector } from "@/components/photobooth/FilterSelector";
 import type { LayoutConfig } from "@/types/photobooth";
 
 interface KoreanCaptureProps {
@@ -53,6 +54,7 @@ export function KoreanCapture({
           isReady={session.camera.isReady}
           aspectRatio={slotAspectRatio}
           isMirrored={session.isMirrored}
+          filterCss={FILTER_CSS[session.filter]}
         />
         <button
           onClick={() => session.setMirrored(!session.isMirrored)}
@@ -70,6 +72,12 @@ export function KoreanCapture({
           isRunning={session.isCountdownRunning}
         />
       </div>
+
+      <FilterSelector
+        mode="korean"
+        selected={session.filter}
+        onSelect={session.setFilter}
+      />
 
       {/* Photo thumbnails */}
       {session.photos.length > 0 && (

@@ -1,4 +1,4 @@
-import { LayoutConfig, KoreanLayout, LayoutType } from '@/types/photobooth';
+import { LayoutConfig, KoreanLayout, LayoutType, CameraFilter, PhotoboothMode } from '@/types/photobooth';
 
 export const COUNTDOWN_DURATION = 3;
 export const PAUSE_BETWEEN_PHOTOS = 1500; // ms
@@ -104,6 +104,25 @@ export const KOREAN_LAYOUTS: KoreanLayout[] = [
 ];
 
 export const DEFAULT_FRAME_COLOR = '#ffffff';
+
+export const FILTER_CSS: Record<CameraFilter, string> = {
+  none: 'none',
+  bw: 'grayscale(1)',
+  smoothing: 'blur(0.5px) brightness(1.05) contrast(0.97)',
+  brighter: 'brightness(1.3)',
+};
+
+export const FILTER_LABELS: Record<CameraFilter, string> = {
+  none: 'None',
+  bw: 'B&W',
+  smoothing: 'Smooth',
+  brighter: 'Bright',
+};
+
+export const MODE_FILTERS: Record<PhotoboothMode, CameraFilter[]> = {
+  korean: ['none', 'bw', 'smoothing', 'brighter'],
+  vintage: ['none', 'bw'],
+};
 
 export const FRAME_COLORS = [
   '#ffffff',
