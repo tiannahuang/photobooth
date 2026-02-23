@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useComposition } from "@/hooks/useComposition";
 import { FRAME_COLORS, VINTAGE_FRAME_COLORS } from "@/lib/constants";
@@ -36,6 +37,16 @@ export function FrameCustomizer({
     theme,
   });
 
+  const isVintage = mode === "vintage";
+  const [isDeveloping, setIsDeveloping] = useState(isVintage);
+
+  useEffect(() => {
+    if (isVintage && previewUrl) {
+      const timer = setTimeout(() => setIsDeveloping(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isVintage, previewUrl]);
+
   return (
     <motion.div
       className="flex flex-col lg:flex-row items-center gap-8 w-full max-w-4xl mx-auto px-4"
@@ -45,22 +56,51 @@ export function FrameCustomizer({
       {/* Preview */}
       <div className="flex-1 flex items-center justify-center">
         <div className="relative w-full max-w-sm">
-          {isRendering && (
+          {isRendering && !isVintage && (
             <div className="absolute inset-0 flex items-center justify-center bg-muted/50 z-10">
               <div className="text-sm text-muted-foreground">Rendering...</div>
             </div>
           )}
           {previewUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="max-h-[calc(100vh-12rem)] w-auto mx-auto shadow-lg"
-            />
+            <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="max-h-[calc(100vh-12rem)] w-auto mx-auto shadow-lg"
+                style={isVintage && isDeveloping ? { filter: "sepia(0.6) brightness(0.9)" } : undefined}
+              />
+              {isVintage && (
+                <>
+                  {/* Photo developing fade-in overlay */}
+                  <motion.div
+                    className="absolute inset-0 bg-amber-50"
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 0 }}
+                    transition={{ duration: 2.5, ease: "easeOut" }}
+                  />
+                  {/* Developing text overlay */}
+                  <AnimatePresence>
+                    {isDeveloping && (
+                      <motion.div
+                        className="absolute inset-0 flex items-center justify-center"
+                        initial={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <span className="text-amber-900/80 text-lg font-medium tracking-wide italic">
+                          Developing...
+                        </span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </>
+              )}
+            </div>
           ) : (
             <div className="w-full aspect-[3/4] bg-muted flex items-center justify-center">
               <span className="text-muted-foreground text-sm">
-                Loading preview...
+                {isVintage ? "Developing..." : "Loading preview..."}
               </span>
             </div>
           )}

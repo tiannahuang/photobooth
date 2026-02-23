@@ -107,6 +107,7 @@ export default function DigitalPage() {
           photos={photos}
           onRetake={handleRetakeAll}
           onConfirm={handleConfirmPhotos}
+          layoutConfig={layoutConfig}
         />
       )}
       {step === "select" && (

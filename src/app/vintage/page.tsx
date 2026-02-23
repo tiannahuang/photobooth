@@ -5,12 +5,11 @@ import type { VintageLayout, WizardStep, Theme } from "@/types/photobooth";
 import { LAYOUTS, VINTAGE_LAYOUTS, DEFAULT_FRAME_COLOR } from "@/lib/constants";
 import { LayoutSelector } from "@/components/digital/LayoutSelector";
 import { VintageCapture } from "@/components/vintage/VintageCapture";
-import { PhotoReview } from "@/components/photobooth/PhotoReview";
 import { FrameCustomizer } from "@/components/photobooth/FrameCustomizer";
 import { DownloadScreen } from "@/components/photobooth/DownloadScreen";
 import { PhotoboothWizard } from "@/components/photobooth/PhotoboothWizard";
 
-const STEPS: WizardStep[] = ["layout", "capture", "review", "customize", "download"];
+const STEPS: WizardStep[] = ["layout", "capture", "customize", "download"];
 
 export default function VintagePage() {
   const [step, setStep] = useState<WizardStep>("layout");
@@ -28,15 +27,6 @@ export default function VintagePage() {
 
   const handleCaptureComplete = (capturedPhotos: string[]) => {
     setPhotos(capturedPhotos);
-    setStep("review");
-  };
-
-  const handleRetakeAll = () => {
-    setPhotos([]);
-    setStep("capture");
-  };
-
-  const handleConfirmPhotos = () => {
     setStep("customize");
   };
 
@@ -66,13 +56,6 @@ export default function VintagePage() {
         <VintageCapture
           layoutConfig={layoutConfig}
           onComplete={handleCaptureComplete}
-        />
-      )}
-      {step === "review" && (
-        <PhotoReview
-          photos={photos}
-          onRetake={handleRetakeAll}
-          onConfirm={handleConfirmPhotos}
         />
       )}
       {step === "customize" && (

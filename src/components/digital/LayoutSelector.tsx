@@ -52,14 +52,14 @@ export function LayoutSelector<T extends LayoutType>({
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto px-4">
       <h2 className="text-2xl font-semibold">Choose a Layout</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full">
+      <div className="flex flex-wrap justify-center gap-4 w-full">
         {layouts.map((layout) => (
           <motion.button
             key={layout}
             onClick={() => onSelect(layout)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors ${
+            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-colors w-36 sm:w-40 ${
               selected === layout
                 ? "border-foreground bg-accent"
                 : "border-transparent bg-muted/50 hover:bg-muted"

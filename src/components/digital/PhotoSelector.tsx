@@ -200,7 +200,7 @@ export function PhotoSelector({
         another slot to swap or tap again to remove. Drag slots to reorder.
       </p>
 
-      <div className="grid grid-cols-[3fr_2fr] flex-1 gap-8 w-full min-h-0">
+      <div className="grid grid-cols-[3fr_2fr] flex-1 gap-8 w-full min-h-0 items-center">
         {/* Left: Photo pool + actions */}
         <div className="flex flex-col gap-3 min-h-0">
           {/* Action buttons row */}
