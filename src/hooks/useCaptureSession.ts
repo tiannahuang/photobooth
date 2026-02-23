@@ -49,6 +49,7 @@ export function useCaptureSession({
   const [filter, setFilterState] = useState<CameraFilter>("none");
   const videoCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const frameIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const sessionRecorderRef = useRef<{ recorder: MediaRecorder; chunks: Blob[] } | null>(null);
 
   const setMirrored = useCallback((mirrored: boolean) => {
     isMirroredRef.current = mirrored;
@@ -100,6 +101,46 @@ export function useCaptureSession({
     }
   }, []);
 
+  const startSessionRecording = useCallback((canvas: HTMLCanvasElement) => {
+    const mimeType = getSupportedMimeType();
+    const chunks: Blob[] = [];
+
+    try {
+      const stream = canvas.captureStream(30);
+      const recorder = new MediaRecorder(stream, { mimeType });
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+      recorder.start();
+      sessionRecorderRef.current = { recorder, chunks };
+    } catch {
+      sessionRecorderRef.current = null;
+    }
+  }, []);
+
+  const stopSessionRecording = useCallback((): Promise<Blob | null> => {
+    return new Promise((resolve) => {
+      const session = sessionRecorderRef.current;
+      if (!session) {
+        resolve(null);
+        return;
+      }
+      const { recorder, chunks } = session;
+      if (recorder.state === "inactive") {
+        const mimeType = getSupportedMimeType();
+        resolve(chunks.length > 0 ? new Blob(chunks, { type: mimeType }) : null);
+        sessionRecorderRef.current = null;
+        return;
+      }
+      recorder.onstop = () => {
+        const mimeType = getSupportedMimeType();
+        resolve(chunks.length > 0 ? new Blob(chunks, { type: mimeType }) : null);
+        sessionRecorderRef.current = null;
+      };
+      recorder.stop();
+    });
+  }, []);
+
   const recordClip = useCallback((canvas: HTMLCanvasElement): {
     stop: () => Promise<Blob | null>;
   } => {
@@ -146,33 +187,35 @@ export function useCaptureSession({
     const captured: string[] = [];
     const capturedClips: Blob[] = [];
 
+    // Start canvas draw loop and continuous session recording once for the whole session
+    let canvas: HTMLCanvasElement | null = null;
+    if (enableVideo && mediaStream && camera.videoRef.current) {
+      canvas = ensureCanvas(camera.videoRef.current);
+      startDrawLoop(camera.videoRef.current, canvas);
+      startSessionRecording(canvas);
+    }
+
     for (let i = 0; i < photoCount; i++) {
       if (!isSessionActive.current) break;
 
       setCurrentPhotoIndex(i);
       setStep("countdown");
 
-      // Start per-photo clip recording during countdown
+      // Start per-photo clip recording during countdown (draw loop already running)
       let clipRecorder: { stop: () => Promise<Blob | null> } | null = null;
-      if (enableVideo && mediaStream && camera.videoRef.current) {
-        const canvas = ensureCanvas(camera.videoRef.current);
-        startDrawLoop(camera.videoRef.current, canvas);
+      if (enableVideo && canvas) {
         clipRecorder = recordClip(canvas);
       }
 
       await startCountdown();
 
       if (!isSessionActive.current) {
-        if (clipRecorder) {
-          stopDrawLoop();
-          await clipRecorder.stop();
-        }
+        if (clipRecorder) await clipRecorder.stop();
         break;
       }
 
-      // Stop clip recording
+      // Stop per-photo clip recording
       if (clipRecorder) {
-        stopDrawLoop();
         const clipBlob = await clipRecorder.stop();
         if (clipBlob) {
           capturedClips.push(clipBlob);
@@ -192,13 +235,13 @@ export function useCaptureSession({
       }
     }
 
-    // Create a combined session video from all clips (for session video download)
-    if (enableVideo && capturedClips.length > 0) {
-      const mimeType = getSupportedMimeType();
-      const combined = new Blob(capturedClips, { type: mimeType });
-      setVideoBlob(combined);
+    // Stop continuous session recording → single valid WebM blob
+    if (enableVideo) {
+      const sessionBlob = await stopSessionRecording();
+      if (sessionBlob) setVideoBlob(sessionBlob);
     }
 
+    stopDrawLoop();
     camera.stopCamera();
     setStep("review");
     isSessionActive.current = false;
@@ -212,10 +255,18 @@ export function useCaptureSession({
     startDrawLoop,
     stopDrawLoop,
     recordClip,
+    startSessionRecording,
+    stopSessionRecording,
   ]);
 
   const retakeAll = useCallback(() => {
     isSessionActive.current = false;
+    // Clean up session recorder if still running
+    if (sessionRecorderRef.current) {
+      const { recorder } = sessionRecorderRef.current;
+      if (recorder.state !== "inactive") recorder.stop();
+      sessionRecorderRef.current = null;
+    }
     stopDrawLoop();
     setPhotos([]);
     setClips([]);
