@@ -67,7 +67,7 @@ export async function generateFrameVideo(
 
   let stream: MediaStream;
   try {
-    stream = canvas.captureStream(30);
+    stream = canvas.captureStream(15);
   } catch {
     return null;
   }

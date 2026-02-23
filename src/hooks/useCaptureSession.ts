@@ -91,7 +91,7 @@ export function useCaptureSession({
     };
 
     drawFrame();
-    frameIntervalRef.current = setInterval(drawFrame, 33); // ~30fps for clips
+    frameIntervalRef.current = setInterval(drawFrame, 67); // ~15fps for stop-motion feel
   }, []);
 
   const stopDrawLoop = useCallback(() => {
@@ -106,7 +106,7 @@ export function useCaptureSession({
     const chunks: Blob[] = [];
 
     try {
-      const stream = canvas.captureStream(30);
+      const stream = canvas.captureStream(15);
       const recorder = new MediaRecorder(stream, { mimeType });
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunks.push(e.data);
@@ -149,7 +149,7 @@ export function useCaptureSession({
 
     let recorder: MediaRecorder;
     try {
-      const stream = canvas.captureStream(30);
+      const stream = canvas.captureStream(15);
       recorder = new MediaRecorder(stream, { mimeType });
     } catch {
       return { stop: async () => null };
