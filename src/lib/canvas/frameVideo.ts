@@ -135,7 +135,10 @@ export async function generateFrameVideo(
     }
   };
 
+  const isVintage = layout.type.startsWith('vintage-');
+
   const drawLogo = () => {
+    if (isVintage) return;
     ctx!.fillStyle = logoColor;
     ctx!.font = "600 20px system-ui, sans-serif";
     ctx!.textAlign = "center";

@@ -85,14 +85,16 @@ export async function renderComposition(
     }
   }
 
-  // Draw "Photobooth" logo text in bottom area
-  const logoY = canvas.height - LOGO_AREA_HEIGHT;
-  const isLightFrame = isLightColor(options.frameColor);
-  ctx.fillStyle = isLightFrame ? "rgba(0, 0, 0, 0.25)" : "rgba(255, 255, 255, 0.35)";
-  ctx.font = "600 20px system-ui, sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText("Photobooth", canvas.width / 2, logoY + LOGO_AREA_HEIGHT / 2);
+  // Draw "Photobooth" logo text in bottom area (skip for vintage layouts)
+  if (!layout.type.startsWith('vintage-')) {
+    const logoY = canvas.height - LOGO_AREA_HEIGHT;
+    const isLightFrame = isLightColor(options.frameColor);
+    ctx.fillStyle = isLightFrame ? "rgba(0, 0, 0, 0.25)" : "rgba(255, 255, 255, 0.35)";
+    ctx.font = "600 20px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Photobooth", canvas.width / 2, logoY + LOGO_AREA_HEIGHT / 2);
+  }
 
   return canvas;
 }

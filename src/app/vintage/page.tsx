@@ -16,8 +16,6 @@ export default function VintagePage() {
   const [step, setStep] = useState<WizardStep>("layout");
   const [layout, setLayout] = useState<VintageLayout>("vintage-strip");
   const [photos, setPhotos] = useState<string[]>([]);
-  const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
-  const [clips, setClips] = useState<Blob[]>([]);
   const [frameColor, setFrameColor] = useState(DEFAULT_FRAME_COLOR);
   const [theme, setTheme] = useState<Theme | null>(null);
 
@@ -28,17 +26,13 @@ export default function VintagePage() {
     setStep("capture");
   };
 
-  const handleCaptureComplete = (capturedPhotos: string[], video: Blob | null, capturedClips: Blob[]) => {
+  const handleCaptureComplete = (capturedPhotos: string[]) => {
     setPhotos(capturedPhotos);
-    setVideoBlob(video);
-    setClips(capturedClips);
     setStep("review");
   };
 
   const handleRetakeAll = () => {
     setPhotos([]);
-    setVideoBlob(null);
-    setClips([]);
     setStep("capture");
   };
 
@@ -53,8 +47,6 @@ export default function VintagePage() {
   const handleStartOver = () => {
     setStep("layout");
     setPhotos([]);
-    setVideoBlob(null);
-    setClips([]);
     setFrameColor(DEFAULT_FRAME_COLOR);
     setTheme(null);
   };
@@ -101,9 +93,9 @@ export default function VintagePage() {
           layoutConfig={layoutConfig}
           frameColor={frameColor}
           theme={theme}
-          videoBlob={videoBlob}
-          clips={clips}
+          videoBlob={null}
           onStartOver={handleStartOver}
+          mode="vintage"
         />
       )}
     </PhotoboothWizard>

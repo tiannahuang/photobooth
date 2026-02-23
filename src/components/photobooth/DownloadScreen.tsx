@@ -17,6 +17,7 @@ interface DownloadScreenProps {
   videoBlob: Blob | null;
   clips?: Blob[];
   onStartOver: () => void;
+  mode?: "digital" | "vintage";
 }
 
 export function DownloadScreen({
@@ -27,6 +28,7 @@ export function DownloadScreen({
   videoBlob,
   clips = [],
   onStartOver,
+  mode = "digital",
 }: DownloadScreenProps) {
   const { previewUrl, downloadImage } = useComposition({
     photos,
@@ -39,7 +41,7 @@ export function DownloadScreen({
   const [isGeneratingFrameVideo, setIsGeneratingFrameVideo] = useState(false);
 
   useEffect(() => {
-    if (photos.length === 0) return;
+    if (photos.length === 0 || mode === "vintage") return;
 
     let cancelled = false;
     setIsGeneratingFrameVideo(true);
@@ -55,7 +57,7 @@ export function DownloadScreen({
     return () => {
       cancelled = true;
     };
-  }, [photos, layoutConfig, frameColor, theme, clips]);
+  }, [photos, layoutConfig, frameColor, theme, clips, mode]);
 
   const handleDownloadSessionVideo = () => {
     if (videoBlob) {
@@ -95,22 +97,24 @@ export function DownloadScreen({
           Download Photo
         </Button>
 
-        {/* Frame strip video — always available once generated */}
-        <Button
-          variant="outline"
-          onClick={handleDownloadFrameVideo}
-          className="w-full"
-          disabled={isGeneratingFrameVideo || !frameVideoBlob}
-        >
-          {isGeneratingFrameVideo ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating Strip Video...
-            </>
-          ) : (
-            "Download Strip Video"
-          )}
-        </Button>
+        {/* Frame strip video — only in digital mode */}
+        {mode === "digital" && (
+          <Button
+            variant="outline"
+            onClick={handleDownloadFrameVideo}
+            className="w-full"
+            disabled={isGeneratingFrameVideo || !frameVideoBlob}
+          >
+            {isGeneratingFrameVideo ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Generating Strip Video...
+              </>
+            ) : (
+              "Download Strip Video"
+            )}
+          </Button>
+        )}
 
         {/* Session video — only if one was recorded */}
         {videoBlob && (
