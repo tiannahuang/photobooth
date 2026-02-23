@@ -200,7 +200,7 @@ export function PhotoSelector({
         another slot to swap or tap again to remove. Drag slots to reorder.
       </p>
 
-      <div className="grid grid-cols-[3fr_2fr] flex-1 gap-8 w-full min-h-0 items-center">
+      <div className="grid grid-cols-[3fr_2fr] flex-1 gap-8 w-full min-h-0">
         {/* Left: Photo pool + actions */}
         <div className="flex flex-col gap-3 min-h-0">
           {/* Action buttons row */}
@@ -251,75 +251,83 @@ export function PhotoSelector({
         </div>
 
         {/* Right: Frame layout preview */}
-        <div className="flex flex-col items-center justify-center gap-2 px-4">
+        <div className="flex flex-col items-center gap-2 px-4 min-h-0 overflow-hidden">
           <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Frame Preview</span>
-          <div
-            className="relative w-full bg-muted/30 border border-border rounded-lg overflow-hidden touch-none"
-            style={{ aspectRatio: frameAspect }}
-            onDragOver={handleDragOver}
-          >
-            {layoutConfig.slots.map((slot, i) => {
-              const left = (slot.x / layoutConfig.canvasWidth) * 100;
-              const top = (slot.y / layoutConfig.canvasHeight) * 100;
-              const width = (slot.width / layoutConfig.canvasWidth) * 100;
-              const height = (slot.height / layoutConfig.canvasHeight) * 100;
-              const photoIdx = slotAssignments[i];
-              const isActive = activeSlotIndex === i;
-              const isDragging = dragSlotIndex === i;
+          <div className="flex-1 min-h-0 w-full flex items-center justify-center">
+            <div
+              className="relative bg-muted/30 border border-border rounded-lg overflow-hidden touch-none"
+              style={{
+                aspectRatio: frameAspect,
+                height: frameAspect < 1 ? '100%' : 'auto',
+                width: frameAspect >= 1 ? '100%' : 'auto',
+                maxWidth: '100%',
+                maxHeight: '100%',
+              }}
+              onDragOver={handleDragOver}
+            >
+              {layoutConfig.slots.map((slot, i) => {
+                const left = (slot.x / layoutConfig.canvasWidth) * 100;
+                const top = (slot.y / layoutConfig.canvasHeight) * 100;
+                const width = (slot.width / layoutConfig.canvasWidth) * 100;
+                const height = (slot.height / layoutConfig.canvasHeight) * 100;
+                const photoIdx = slotAssignments[i];
+                const isActive = activeSlotIndex === i;
+                const isDragging = dragSlotIndex === i;
 
-              return (
-                <button
-                  key={i}
-                  onClick={() => handleSlotTap(i)}
-                  draggable={photoIdx !== null}
-                  onDragStart={() => handleDragStart(i)}
-                  onDragOver={handleDragOver}
-                  onDrop={() => handleDrop(i)}
-                  onDragEnd={handleDragEnd}
-                  className={`absolute overflow-hidden transition-all ${
-                    isDragging
-                      ? "opacity-50 ring-2 ring-blue-400"
-                      : isActive
-                        ? "ring-2 ring-blue-500 ring-offset-1"
-                        : "ring-1 ring-border"
-                  }`}
-                  style={{
-                    left: `${left}%`,
-                    top: `${top}%`,
-                    width: `${width}%`,
-                    height: `${height}%`,
-                  }}
-                >
-                  {photoIdx !== null ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={allPhotos[photoIdx]}
-                      alt={`Slot ${i + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                      <span className="text-xs text-muted-foreground">
-                        {i + 1}
-                      </span>
-                    </div>
-                  )}
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleSlotTap(i)}
+                    draggable={photoIdx !== null}
+                    onDragStart={() => handleDragStart(i)}
+                    onDragOver={handleDragOver}
+                    onDrop={() => handleDrop(i)}
+                    onDragEnd={handleDragEnd}
+                    className={`absolute overflow-hidden transition-all ${
+                      isDragging
+                        ? "opacity-50 ring-2 ring-blue-400"
+                        : isActive
+                          ? "ring-2 ring-blue-500 ring-offset-1"
+                          : "ring-1 ring-border"
+                    }`}
+                    style={{
+                      left: `${left}%`,
+                      top: `${top}%`,
+                      width: `${width}%`,
+                      height: `${height}%`,
+                    }}
+                  >
+                    {photoIdx !== null ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={allPhotos[photoIdx]}
+                        alt={`Slot ${i + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <span className="text-xs text-muted-foreground">
+                          {i + 1}
+                        </span>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Confirm / Retake — full width below grid */}
-      <div className="flex gap-3 w-full">
-        <Button variant="outline" onClick={onRetake} className="flex-1">
+      {/* Confirm / Retake — centered below grid */}
+      <div className="flex gap-3 justify-center w-full">
+        <Button variant="outline" onClick={onRetake} className="w-40">
           Retake
         </Button>
         <Button
           onClick={handleConfirm}
           disabled={!allFilled}
-          className="flex-1"
+          className="w-40"
         >
           {allFilled
             ? "Confirm"
