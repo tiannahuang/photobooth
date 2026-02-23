@@ -13,7 +13,7 @@ import type { LayoutConfig } from "@/types/photobooth";
 
 interface VintageCaptureProps {
   layoutConfig: LayoutConfig;
-  onComplete: (photos: string[], videoBlob: Blob | null) => void;
+  onComplete: (photos: string[], videoBlob: Blob | null, clips: Blob[]) => void;
 }
 
 export function VintageCapture({ layoutConfig, onComplete }: VintageCaptureProps) {
@@ -32,9 +32,9 @@ export function VintageCapture({ layoutConfig, onComplete }: VintageCaptureProps
 
   useEffect(() => {
     if (session.step === "review" && session.photos.length > 0) {
-      onComplete(session.photos, session.videoBlob);
+      onComplete(session.photos, session.videoBlob, session.clips);
     }
-  }, [session.step, session.photos, session.videoBlob, onComplete]);
+  }, [session.step, session.photos, session.videoBlob, session.clips, onComplete]);
 
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-lg mx-auto px-4">

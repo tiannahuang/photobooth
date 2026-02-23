@@ -17,6 +17,7 @@ export default function VintagePage() {
   const [layout, setLayout] = useState<VintageLayout>("vintage-strip");
   const [photos, setPhotos] = useState<string[]>([]);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
+  const [clips, setClips] = useState<Blob[]>([]);
   const [frameColor, setFrameColor] = useState(DEFAULT_FRAME_COLOR);
   const [theme, setTheme] = useState<Theme | null>(null);
 
@@ -27,15 +28,17 @@ export default function VintagePage() {
     setStep("capture");
   };
 
-  const handleCaptureComplete = (capturedPhotos: string[], video: Blob | null) => {
+  const handleCaptureComplete = (capturedPhotos: string[], video: Blob | null, capturedClips: Blob[]) => {
     setPhotos(capturedPhotos);
     setVideoBlob(video);
+    setClips(capturedClips);
     setStep("review");
   };
 
   const handleRetakeAll = () => {
     setPhotos([]);
     setVideoBlob(null);
+    setClips([]);
     setStep("capture");
   };
 
@@ -51,6 +54,7 @@ export default function VintagePage() {
     setStep("layout");
     setPhotos([]);
     setVideoBlob(null);
+    setClips([]);
     setFrameColor(DEFAULT_FRAME_COLOR);
     setTheme(null);
   };
@@ -98,6 +102,7 @@ export default function VintagePage() {
           frameColor={frameColor}
           theme={theme}
           videoBlob={videoBlob}
+          clips={clips}
           onStartOver={handleStartOver}
         />
       )}

@@ -1,4 +1,28 @@
-import type { Theme } from "@/types/photobooth";
+import type { Theme, ThemeAsset } from "@/types/photobooth";
+
+function getDecoAssets(w: number, h: number): ThemeAsset[] {
+  const s = (pct: number) => w * pct; // size helper
+  return [
+    // Top edge (4 assets)
+    { src: "/themes/deco/heart.svg", x: w * 0.02, y: h * 0.005, width: s(0.09), height: s(0.09) },
+    { src: "/themes/deco/star.svg", x: w * 0.3, y: -s(0.02), width: s(0.1), height: s(0.1) },
+    { src: "/themes/deco/sparkle.svg", x: w * 0.6, y: h * 0.008, width: s(0.07), height: s(0.07) },
+    { src: "/themes/deco/smiley.svg", x: w * 0.85, y: -s(0.01), width: s(0.1), height: s(0.1) },
+    // Bottom edge (4 assets)
+    { src: "/themes/deco/cherry.svg", x: w * 0.03, y: h - s(0.1), width: s(0.1), height: s(0.1) },
+    { src: "/themes/deco/flower.svg", x: w * 0.35, y: h - s(0.09), width: s(0.09), height: s(0.09) },
+    { src: "/themes/deco/rainbow.svg", x: w * 0.6, y: h - s(0.08), width: s(0.13), height: s(0.07) },
+    { src: "/themes/deco/lightning.svg", x: w * 0.88, y: h - s(0.1), width: s(0.08), height: s(0.1) },
+    // Left edge (3 assets)
+    { src: "/themes/deco/cloud.svg", x: -s(0.03), y: h * 0.25, width: s(0.12), height: s(0.08) },
+    { src: "/themes/deco/sparkle.svg", x: w * 0.01, y: h * 0.5, width: s(0.06), height: s(0.06) },
+    { src: "/themes/deco/star.svg", x: -s(0.02), y: h * 0.73, width: s(0.08), height: s(0.08) },
+    // Right edge (3 assets)
+    { src: "/themes/deco/heart.svg", x: w - s(0.09), y: h * 0.2, width: s(0.08), height: s(0.08) },
+    { src: "/themes/deco/smiley.svg", x: w - s(0.1), y: h * 0.48, width: s(0.09), height: s(0.09) },
+    { src: "/themes/deco/flower.svg", x: w - s(0.08), y: h * 0.72, width: s(0.07), height: s(0.07) },
+  ];
+}
 
 export const themes: Theme[] = [
   {
@@ -94,5 +118,13 @@ export const themes: Theme[] = [
       },
     ],
     previewSrc: "/themes/cottagecore/preview.svg",
+  },
+  {
+    name: "deco",
+    label: "Deco",
+    colors: ["#fff5f5", "#fce4ec", "#ffffff"],
+    assets: [],
+    previewSrc: "/themes/deco/preview.svg",
+    getAssets: getDecoAssets,
   },
 ];

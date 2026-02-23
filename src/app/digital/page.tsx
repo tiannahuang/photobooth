@@ -30,6 +30,8 @@ export default function DigitalPage() {
   const [photos, setPhotos] = useState<string[]>([]);
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
+  const [clips, setClips] = useState<Blob[]>([]);
+  const [selectedClips, setSelectedClips] = useState<Blob[]>([]);
   const [frameColor, setFrameColor] = useState(DEFAULT_FRAME_COLOR);
   const [theme, setTheme] = useState<Theme | null>(null);
 
@@ -42,10 +44,12 @@ export default function DigitalPage() {
 
   const handleCaptureComplete = (
     capturedPhotos: string[],
-    video: Blob | null
+    video: Blob | null,
+    capturedClips: Blob[]
   ) => {
     setPhotos(capturedPhotos);
     setVideoBlob(video);
+    setClips(capturedClips);
     setStep("review");
   };
 
@@ -53,6 +57,8 @@ export default function DigitalPage() {
     setPhotos([]);
     setSelectedPhotos([]);
     setVideoBlob(null);
+    setClips([]);
+    setSelectedClips([]);
     setStep("capture");
   };
 
@@ -62,6 +68,9 @@ export default function DigitalPage() {
 
   const handleSelectConfirm = (selected: string[]) => {
     setSelectedPhotos(selected);
+    // Map clips to match selected photo order
+    const mapped = selected.map((photo) => clips[photos.indexOf(photo)]).filter(Boolean);
+    setSelectedClips(mapped);
     setStep("customize");
   };
 
@@ -74,6 +83,8 @@ export default function DigitalPage() {
     setPhotos([]);
     setSelectedPhotos([]);
     setVideoBlob(null);
+    setClips([]);
+    setSelectedClips([]);
     setFrameColor(DEFAULT_FRAME_COLOR);
     setTheme(null);
   };
@@ -125,6 +136,7 @@ export default function DigitalPage() {
           frameColor={frameColor}
           theme={theme}
           videoBlob={videoBlob}
+          clips={selectedClips}
           onStartOver={handleStartOver}
         />
       )}

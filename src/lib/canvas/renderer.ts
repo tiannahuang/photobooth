@@ -63,8 +63,9 @@ export async function renderComposition(
   }
 
   // Draw theme assets (stickers, borders) if theme is set
-  if (options.theme && options.theme.assets.length > 0) {
-    for (const asset of options.theme.assets) {
+  if (options.theme) {
+    const assets = options.theme.getAssets?.(canvas.width, canvas.height) ?? options.theme.assets;
+    for (const asset of assets) {
       try {
         const assetImg = await loadImage(asset.src);
         ctx.drawImage(assetImg, asset.x, asset.y, asset.width, asset.height);

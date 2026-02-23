@@ -15,6 +15,7 @@ interface DownloadScreenProps {
   frameColor: string;
   theme: Theme | null;
   videoBlob: Blob | null;
+  clips?: Blob[];
   onStartOver: () => void;
 }
 
@@ -24,6 +25,7 @@ export function DownloadScreen({
   frameColor,
   theme,
   videoBlob,
+  clips = [],
   onStartOver,
 }: DownloadScreenProps) {
   const { previewUrl, downloadImage } = useComposition({
@@ -42,7 +44,7 @@ export function DownloadScreen({
     let cancelled = false;
     setIsGeneratingFrameVideo(true);
 
-    generateFrameVideo(photos, layoutConfig, { frameColor, theme })
+    generateFrameVideo(photos, layoutConfig, { frameColor, theme }, clips)
       .then((blob) => {
         if (!cancelled) setFrameVideoBlob(blob);
       })
@@ -53,7 +55,7 @@ export function DownloadScreen({
     return () => {
       cancelled = true;
     };
-  }, [photos, layoutConfig, frameColor, theme]);
+  }, [photos, layoutConfig, frameColor, theme, clips]);
 
   const handleDownloadSessionVideo = () => {
     if (videoBlob) {

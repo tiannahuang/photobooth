@@ -121,7 +121,7 @@ export function CurtainSelector() {
                   Digital
                 </span>
                 <span className="text-stone-500 text-sm">
-                  Life4Cuts style
+                  Korean photobooth experience
                 </span>
               </div>
             </motion.button>

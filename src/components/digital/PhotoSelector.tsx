@@ -153,7 +153,7 @@ export function PhotoSelector({
         another slot to swap or tap again to remove.
       </p>
 
-      <div className="flex flex-1 gap-6 w-full min-h-0">
+      <div className="flex flex-1 gap-8 w-full min-h-0">
         {/* Left: Photo pool + actions */}
         <div className="flex-1 flex flex-col gap-3 min-h-0">
           {/* Action buttons row */}
@@ -220,7 +220,7 @@ export function PhotoSelector({
         </div>
 
         {/* Right: Frame layout preview */}
-        <div className="flex items-center justify-center w-64 shrink-0">
+        <div className="flex items-center justify-center w-80 shrink-0 px-4">
           <div
             className="relative w-full bg-muted/30 border border-border rounded-lg overflow-hidden"
             style={{ aspectRatio: frameAspect }}

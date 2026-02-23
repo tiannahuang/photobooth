@@ -28,7 +28,7 @@ export interface LayoutConfig {
   padding: number;
 }
 
-export type ThemeName = 'minimalist' | 'y2k' | 'coquette' | 'cottagecore';
+export type ThemeName = 'minimalist' | 'y2k' | 'coquette' | 'cottagecore' | 'deco';
 
 export interface ThemeAsset {
   src: string;
@@ -44,6 +44,7 @@ export interface Theme {
   colors: string[];
   assets: ThemeAsset[];
   previewSrc: string;
+  getAssets?: (canvasWidth: number, canvasHeight: number) => ThemeAsset[];
 }
 
 export type CameraFilter = 'none' | 'bw' | 'smoothing' | 'brighter' | 'warm' | 'cool' | 'vintage' | 'vivid' | 'sepia' | 'faded' | 'retro' | 'noir' | 'rose';
