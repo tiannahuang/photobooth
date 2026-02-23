@@ -3,14 +3,15 @@
 import { useState, useCallback, useRef } from "react";
 import { useCamera } from "./useCamera";
 import { useCountdown } from "./useCountdown";
-import { PAUSE_BETWEEN_PHOTOS, FILTER_CSS } from "@/lib/constants";
+import { PAUSE_BETWEEN_PHOTOS, SPACEBAR_TIMEOUT, FILTER_CSS } from "@/lib/constants";
 import { getSupportedMimeType } from "@/lib/mediaUtils";
-import type { CaptureStep, CameraFilter } from "@/types/photobooth";
+import type { CaptureStep, CameraFilter, CaptureMode } from "@/types/photobooth";
 
 export interface UseCaptureSessionOptions {
   photoCount: number;
   enableVideo?: boolean;
   targetAspectRatio?: number;
+  captureMode?: CaptureMode;
 }
 
 export interface UseCaptureSessionReturn {
@@ -26,6 +27,8 @@ export interface UseCaptureSessionReturn {
   setMirrored: (mirrored: boolean) => void;
   filter: CameraFilter;
   setFilter: (filter: CameraFilter) => void;
+  isWaitingForTrigger: boolean;
+  triggerCapture: () => void;
   startSession: () => Promise<void>;
   retakeAll: () => void;
 }
@@ -34,6 +37,7 @@ export function useCaptureSession({
   photoCount,
   enableVideo = false,
   targetAspectRatio,
+  captureMode = "auto",
 }: UseCaptureSessionOptions): UseCaptureSessionReturn {
   const [step, setStep] = useState<CaptureStep>("idle");
   const [photos, setPhotos] = useState<string[]>([]);
@@ -41,8 +45,10 @@ export function useCaptureSession({
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const camera = useCamera();
-  const { count, isRunning: isCountdownRunning, startCountdown } = useCountdown();
+  const { count, isRunning: isCountdownRunning, startCountdown, cancel } = useCountdown();
   const isSessionActive = useRef(false);
+  const [isWaitingForTrigger, setIsWaitingForTrigger] = useState(false);
+  const isWaitingRef = useRef(false);
   const isMirroredRef = useRef(true);
   const [isMirrored, setIsMirroredState] = useState(true);
   const filterRef = useRef<CameraFilter>("none");
@@ -60,6 +66,14 @@ export function useCaptureSession({
     filterRef.current = f;
     setFilterState(f);
   }, []);
+
+  const triggerCapture = useCallback(() => {
+    if (isWaitingRef.current) {
+      isWaitingRef.current = false;
+      setIsWaitingForTrigger(false);
+      cancel();
+    }
+  }, [cancel]);
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -207,7 +221,15 @@ export function useCaptureSession({
         clipRecorder = recordClip(canvas);
       }
 
-      await startCountdown();
+      if (captureMode === "spacebar") {
+        isWaitingRef.current = true;
+        setIsWaitingForTrigger(true);
+        await startCountdown(SPACEBAR_TIMEOUT);
+        isWaitingRef.current = false;
+        setIsWaitingForTrigger(false);
+      } else {
+        await startCountdown();
+      }
 
       if (!isSessionActive.current) {
         if (clipRecorder) await clipRecorder.stop();
@@ -247,9 +269,11 @@ export function useCaptureSession({
     isSessionActive.current = false;
   }, [
     camera,
+    captureMode,
     enableVideo,
     photoCount,
     targetAspectRatio,
+    cancel,
     startCountdown,
     ensureCanvas,
     startDrawLoop,
@@ -289,6 +313,8 @@ export function useCaptureSession({
     setMirrored,
     filter,
     setFilter,
+    isWaitingForTrigger,
+    triggerCapture,
     startSession,
     retakeAll,
   };

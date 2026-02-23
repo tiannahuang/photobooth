@@ -52,8 +52,11 @@ export type CameraFilter = 'none' | 'bw' | 'smoothing' | 'brighter' | 'warm' | '
 
 export type CaptureStep = 'idle' | 'countdown' | 'capturing' | 'review';
 
+export type CaptureMode = 'auto' | 'spacebar';
+
 export type WizardStep =
   | 'layout'
+  | 'capture-mode'
   | 'capture'
   | 'review'
   | 'select'

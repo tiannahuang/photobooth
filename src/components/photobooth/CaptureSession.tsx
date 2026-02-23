@@ -9,7 +9,7 @@ import { CameraViewfinder } from "@/components/photobooth/CameraViewfinder";
 import { CountdownOverlay } from "@/components/photobooth/CountdownOverlay";
 import { getSlotAspectRatio, FILTER_CSS } from "@/lib/constants";
 import { FilterSelector } from "@/components/photobooth/FilterSelector";
-import type { LayoutConfig, PhotoboothMode } from "@/types/photobooth";
+import type { LayoutConfig, PhotoboothMode, CaptureMode } from "@/types/photobooth";
 
 interface CaptureSessionProps {
   layoutConfig: LayoutConfig;
@@ -17,6 +17,7 @@ interface CaptureSessionProps {
   photoCount: number;
   enableVideo: boolean;
   filterMode: PhotoboothMode;
+  captureMode?: CaptureMode;
   onComplete: (photos: string[], videoBlob: Blob | null, clips: Blob[]) => void;
 }
 
@@ -26,6 +27,7 @@ export function CaptureSession({
   photoCount,
   enableVideo,
   filterMode,
+  captureMode = "auto",
   onComplete,
 }: CaptureSessionProps) {
   const slotAspectRatio = getSlotAspectRatio(layoutConfig);
@@ -34,12 +36,25 @@ export function CaptureSession({
     photoCount,
     enableVideo,
     targetAspectRatio: slotAspectRatio,
+    captureMode,
   });
 
   useEffect(() => {
     session.camera.startCamera();
     return () => session.camera.stopCamera();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (captureMode !== "spacebar") return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space" && session.isWaitingForTrigger) {
+        e.preventDefault();
+        session.triggerCapture();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [captureMode, session.isWaitingForTrigger, session.triggerCapture]);
 
   useEffect(() => {
     if (session.step === "review" && session.photos.length > 0) {
@@ -80,6 +95,18 @@ export function CaptureSession({
           count={session.count}
           isRunning={session.isCountdownRunning}
         />
+        {captureMode === "spacebar" && session.isWaitingForTrigger && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute bottom-3 left-0 right-0 flex justify-center z-10"
+          >
+            <div className="bg-black/70 text-white px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm">
+              <kbd className="bg-white/20 px-2 py-0.5 rounded text-xs font-mono font-bold">SPACE</kbd>
+              Press spacebar to capture
+            </div>
+          </motion.div>
+        )}
       </div>
 
       <FilterSelector

@@ -1,6 +1,7 @@
 import { LayoutConfig, DigitalLayout, VintageLayout, LayoutType, CameraFilter, PhotoboothMode } from '@/types/photobooth';
 
 export const COUNTDOWN_DURATION = 3;
+export const SPACEBAR_TIMEOUT = 10;
 export const PAUSE_BETWEEN_PHOTOS = 1500; // ms
 export const CANVAS_SCALE = 2; // retina
 export const DIGITAL_CAPTURE_COUNT = 8;
