@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import type {
-  KoreanLayout,
+  DigitalLayout,
   WizardStep,
   Theme,
 } from "@/types/photobooth";
 import { LAYOUTS, DEFAULT_FRAME_COLOR } from "@/lib/constants";
-import { LayoutSelector } from "@/components/korean/LayoutSelector";
-import { KoreanCapture } from "@/components/korean/KoreanCapture";
+import { LayoutSelector } from "@/components/digital/LayoutSelector";
+import { DigitalCapture } from "@/components/digital/DigitalCapture";
 import { PhotoReview } from "@/components/photobooth/PhotoReview";
-import { PhotoSelector } from "@/components/korean/PhotoSelector";
+import { PhotoSelector } from "@/components/digital/PhotoSelector";
 import { FrameCustomizer } from "@/components/photobooth/FrameCustomizer";
 import { DownloadScreen } from "@/components/photobooth/DownloadScreen";
 import { PhotoboothWizard } from "@/components/photobooth/PhotoboothWizard";
@@ -24,9 +24,9 @@ const STEPS: WizardStep[] = [
   "download",
 ];
 
-export default function KoreanPage() {
+export default function DigitalPage() {
   const [step, setStep] = useState<WizardStep>("layout");
-  const [layout, setLayout] = useState<KoreanLayout>("1x4-strip");
+  const [layout, setLayout] = useState<DigitalLayout>("1x4-strip");
   const [photos, setPhotos] = useState<string[]>([]);
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
@@ -35,7 +35,7 @@ export default function KoreanPage() {
 
   const layoutConfig = LAYOUTS[layout];
 
-  const handleLayoutSelect = (selected: KoreanLayout) => {
+  const handleLayoutSelect = (selected: DigitalLayout) => {
     setLayout(selected);
     setStep("capture");
   };
@@ -86,7 +86,7 @@ export default function KoreanPage() {
         <LayoutSelector onSelect={handleLayoutSelect} selected={layout} />
       )}
       {step === "capture" && (
-        <KoreanCapture
+        <DigitalCapture
           layoutConfig={layoutConfig}
           onComplete={handleCaptureComplete}
         />

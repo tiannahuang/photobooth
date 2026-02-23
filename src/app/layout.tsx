@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Photobooth",
-  description: "Korean-style and vintage photobooth experiences in your browser",
+  description: "Digital and vintage photobooth experiences in your browser",
 };
 
 export default function RootLayout({

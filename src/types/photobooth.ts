@@ -1,6 +1,6 @@
-export type PhotoboothMode = 'korean' | 'vintage';
+export type PhotoboothMode = 'digital' | 'vintage';
 
-export type KoreanLayout =
+export type DigitalLayout =
   | 'single'
   | '2x2-horizontal'
   | '2x2-vertical'
@@ -9,7 +9,7 @@ export type KoreanLayout =
 
 export type VintageLayout = 'vintage-strip';
 
-export type LayoutType = KoreanLayout | VintageLayout;
+export type LayoutType = DigitalLayout | VintageLayout;
 
 export interface PhotoSlot {
   x: number;
@@ -46,7 +46,7 @@ export interface Theme {
   previewSrc: string;
 }
 
-export type CameraFilter = 'none' | 'bw' | 'smoothing' | 'brighter';
+export type CameraFilter = 'none' | 'bw' | 'smoothing' | 'brighter' | 'warm' | 'cool' | 'vintage' | 'vivid';
 
 export type CaptureStep = 'idle' | 'countdown' | 'capturing' | 'review';
 

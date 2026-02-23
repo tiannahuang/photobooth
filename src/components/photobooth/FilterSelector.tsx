@@ -17,7 +17,7 @@ export function FilterSelector({
   const filters = MODE_FILTERS[mode];
 
   return (
-    <div className="flex gap-2 justify-center">
+    <div className="flex flex-wrap gap-2 justify-center">
       {filters.map((f) => (
         <button
           key={f}

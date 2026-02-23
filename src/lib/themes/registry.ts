@@ -30,7 +30,7 @@ export const themes: Theme[] = [
       {
         src: "/themes/y2k/butterfly.svg",
         x: 150,
-        y: 1130,
+        y: 1190,
         width: 80,
         height: 60,
       },
@@ -52,7 +52,7 @@ export const themes: Theme[] = [
       {
         src: "/themes/coquette/bow.svg",
         x: 140,
-        y: 1150,
+        y: 1200,
         width: 120,
         height: 50,
       },
@@ -81,14 +81,14 @@ export const themes: Theme[] = [
       {
         src: "/themes/cottagecore/mushroom.svg",
         x: 5,
-        y: 1145,
+        y: 1200,
         width: 50,
         height: 50,
       },
       {
         src: "/themes/cottagecore/leaf.svg",
         x: 345,
-        y: 1145,
+        y: 1200,
         width: 50,
         height: 50,
       },

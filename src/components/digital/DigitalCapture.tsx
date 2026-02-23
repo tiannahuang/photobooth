@@ -7,23 +7,23 @@ import { FlipHorizontal2 } from "lucide-react";
 import { useCaptureSession } from "@/hooks/useCaptureSession";
 import { CameraViewfinder } from "@/components/photobooth/CameraViewfinder";
 import { CountdownOverlay } from "@/components/photobooth/CountdownOverlay";
-import { getSlotAspectRatio, FILTER_CSS, KOREAN_CAPTURE_COUNT } from "@/lib/constants";
+import { getSlotAspectRatio, FILTER_CSS, DIGITAL_CAPTURE_COUNT } from "@/lib/constants";
 import { FilterSelector } from "@/components/photobooth/FilterSelector";
 import type { LayoutConfig } from "@/types/photobooth";
 
-interface KoreanCaptureProps {
+interface DigitalCaptureProps {
   layoutConfig: LayoutConfig;
   onComplete: (photos: string[], videoBlob: Blob | null) => void;
 }
 
-export function KoreanCapture({
+export function DigitalCapture({
   layoutConfig,
   onComplete,
-}: KoreanCaptureProps) {
+}: DigitalCaptureProps) {
   const slotAspectRatio = getSlotAspectRatio(layoutConfig);
 
   const session = useCaptureSession({
-    photoCount: KOREAN_CAPTURE_COUNT,
+    photoCount: DIGITAL_CAPTURE_COUNT,
     enableVideo: true,
     targetAspectRatio: slotAspectRatio,
   });
@@ -44,7 +44,7 @@ export function KoreanCapture({
       <div className="text-center">
         <h2 className="text-2xl font-semibold mb-1">Strike a Pose!</h2>
         <p className="text-sm text-muted-foreground">
-          Photo {session.currentPhotoIndex + 1} of {KOREAN_CAPTURE_COUNT}
+          Photo {session.currentPhotoIndex + 1} of {DIGITAL_CAPTURE_COUNT}
         </p>
       </div>
 
@@ -75,7 +75,7 @@ export function KoreanCapture({
       </div>
 
       <FilterSelector
-        mode="korean"
+        mode="digital"
         selected={session.filter}
         onSelect={session.setFilter}
       />

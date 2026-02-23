@@ -1,5 +1,15 @@
 import type { LayoutConfig, CompositionOptions } from "@/types/photobooth";
+import { LOGO_AREA_HEIGHT } from "@/lib/constants";
 import { calculateCoverCrop } from "./crop";
+
+function isLightColor(hex: string): boolean {
+  const c = hex.replace("#", "");
+  const r = parseInt(c.substring(0, 2), 16);
+  const g = parseInt(c.substring(2, 4), 16);
+  const b = parseInt(c.substring(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5;
+}
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -63,6 +73,15 @@ export async function renderComposition(
       }
     }
   }
+
+  // Draw "Photobooth" logo text in bottom area
+  const logoY = canvas.height - LOGO_AREA_HEIGHT;
+  const isLightFrame = isLightColor(options.frameColor);
+  ctx.fillStyle = isLightFrame ? "rgba(0, 0, 0, 0.25)" : "rgba(255, 255, 255, 0.35)";
+  ctx.font = "600 20px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("Photobooth", canvas.width / 2, logoY + LOGO_AREA_HEIGHT / 2);
 
   return canvas;
 }

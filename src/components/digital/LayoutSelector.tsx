@@ -1,15 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { KOREAN_LAYOUTS, LAYOUTS } from "@/lib/constants";
-import type { KoreanLayout } from "@/types/photobooth";
+import { DIGITAL_LAYOUTS, LAYOUTS } from "@/lib/constants";
+import type { DigitalLayout } from "@/types/photobooth";
 
 interface LayoutSelectorProps {
-  selected: KoreanLayout;
-  onSelect: (layout: KoreanLayout) => void;
+  selected: DigitalLayout;
+  onSelect: (layout: DigitalLayout) => void;
 }
 
-function LayoutThumbnail({ layout }: { layout: KoreanLayout }) {
+function LayoutThumbnail({ layout }: { layout: DigitalLayout }) {
   const config = LAYOUTS[layout];
   const scale = 80 / Math.max(config.canvasWidth, config.canvasHeight);
 
@@ -48,7 +48,7 @@ export function LayoutSelector({ selected, onSelect }: LayoutSelectorProps) {
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto px-4">
       <h2 className="text-2xl font-semibold">Choose a Layout</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full">
-        {KOREAN_LAYOUTS.map((layout) => (
+        {DIGITAL_LAYOUTS.map((layout) => (
           <motion.button
             key={layout}
             onClick={() => onSelect(layout)}

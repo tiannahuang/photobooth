@@ -1,9 +1,10 @@
-import { LayoutConfig, KoreanLayout, LayoutType, CameraFilter, PhotoboothMode } from '@/types/photobooth';
+import { LayoutConfig, DigitalLayout, LayoutType, CameraFilter, PhotoboothMode } from '@/types/photobooth';
 
 export const COUNTDOWN_DURATION = 3;
 export const PAUSE_BETWEEN_PHOTOS = 1500; // ms
 export const CANVAS_SCALE = 2; // retina
-export const KOREAN_CAPTURE_COUNT = 8;
+export const DIGITAL_CAPTURE_COUNT = 8;
+export const LOGO_AREA_HEIGHT = 60;
 
 export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
   single: {
@@ -11,7 +12,7 @@ export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
     label: 'Single',
     photoCount: 1,
     canvasWidth: 600,
-    canvasHeight: 800,
+    canvasHeight: 860,
     padding: 40,
     slots: [{ x: 40, y: 40, width: 520, height: 720 }],
   },
@@ -20,7 +21,7 @@ export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
     label: '2x2',
     photoCount: 4,
     canvasWidth: 800,
-    canvasHeight: 600,
+    canvasHeight: 660,
     padding: 30,
     slots: [
       { x: 30, y: 30, width: 365, height: 260 },
@@ -34,7 +35,7 @@ export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
     label: '2x2 Vertical',
     photoCount: 4,
     canvasWidth: 600,
-    canvasHeight: 900,
+    canvasHeight: 960,
     padding: 30,
     slots: [
       { x: 30, y: 30, width: 262, height: 405 },
@@ -48,7 +49,7 @@ export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
     label: 'Photo Strip',
     photoCount: 4,
     canvasWidth: 400,
-    canvasHeight: 1200,
+    canvasHeight: 1260,
     padding: 24,
     slots: [
       { x: 24, y: 24, width: 352, height: 270 },
@@ -62,7 +63,7 @@ export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
     label: '2x4 Grid',
     photoCount: 8,
     canvasWidth: 800,
-    canvasHeight: 1200,
+    canvasHeight: 1260,
     padding: 24,
     slots: [
       { x: 24, y: 24, width: 368, height: 270 },
@@ -80,7 +81,7 @@ export const LAYOUTS: Record<LayoutType, LayoutConfig> = {
     label: 'Vintage Strip',
     photoCount: 4,
     canvasWidth: 400,
-    canvasHeight: 1200,
+    canvasHeight: 1260,
     padding: 30,
     slots: [
       { x: 30, y: 30, width: 340, height: 264 },
@@ -96,7 +97,7 @@ export function getSlotAspectRatio(layout: LayoutConfig): number {
   return slot.width / slot.height;
 }
 
-export const KOREAN_LAYOUTS: KoreanLayout[] = [
+export const DIGITAL_LAYOUTS: DigitalLayout[] = [
   'single',
   '2x2-horizontal',
   '2x2-vertical',
@@ -111,6 +112,10 @@ export const FILTER_CSS: Record<CameraFilter, string> = {
   bw: 'grayscale(1)',
   smoothing: 'blur(0.5px) brightness(1.05) contrast(0.97)',
   brighter: 'brightness(1.3)',
+  warm: 'sepia(0.3) saturate(1.2) brightness(1.05)',
+  cool: 'brightness(1.05) saturate(1.1) hue-rotate(15deg)',
+  vintage: 'sepia(0.2) contrast(0.9) brightness(1.1) saturate(0.85)',
+  vivid: 'saturate(1.5) contrast(1.15)',
 };
 
 export const FILTER_LABELS: Record<CameraFilter, string> = {
@@ -118,11 +123,15 @@ export const FILTER_LABELS: Record<CameraFilter, string> = {
   bw: 'B&W',
   smoothing: 'Smooth',
   brighter: 'Bright',
+  warm: 'Warm',
+  cool: 'Cool',
+  vintage: 'Vintage',
+  vivid: 'Vivid',
 };
 
 export const MODE_FILTERS: Record<PhotoboothMode, CameraFilter[]> = {
-  korean: ['none', 'bw', 'smoothing', 'brighter'],
-  vintage: ['none', 'bw'],
+  digital: ['none', 'bw', 'smoothing', 'brighter', 'warm', 'cool', 'vintage', 'vivid'],
+  vintage: ['none', 'bw', 'warm', 'vintage'],
 };
 
 export const FRAME_COLORS = [
